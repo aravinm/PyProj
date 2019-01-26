@@ -89,9 +89,9 @@ def best_match(user, user_interest_d, n=3):
         matches[potential_partner] = shared_interests_score(user, potential_partner, user_interest_d)
     return matches.most_common(n)
 
-def main():
-    path="./data/"
-    user_interests = get_interests("./data/profiles/")
+
+def print_all_best_match(path="./data/"):
+    user_interests = get_interests(path)
     user_interest_count={}
     best_matches = {}
     for user in user_interests:
@@ -106,5 +106,19 @@ def main():
         print "best matches for {0} are {1[0][0]}(score:{1[0][1]}), {1[1][0]}(score:{1[1][1]}), {1[2][0]}(score:{1[2][1]})" .format(user,best_matches[user])
 
 
+def best_match_for(cur_user, path="./data/"):
+    user_interests = get_interests(path)
+    user_interest_count={}
+    best_matches = {}
+    for user in user_interests:
+        interests = Counter()
+        for title in user_interests[user]:
+            title = sanitised(title)
+            title = remove_stop_words_from(title)
+            interests += Counter(title)
+            user_interest_count[user] = interests
+    best_matches[cur_user] = best_match(cur_user, user_interest_count)
+    return "best matches for {0} are {1[0][0]}(score:{1[0][1]}), {1[1][0]}(score:{1[1][1]}), {1[2][0]}(score:{1[2][1]})" .format(cur_user, best_matches[cur_user])
+
 if __name__ == '__main__':
-    main()
+    print_all_best_match()

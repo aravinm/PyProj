@@ -1,5 +1,5 @@
-
 import os
+import analyser
 
 directory = './data/'
 
@@ -8,10 +8,10 @@ for filename in os.listdir(directory):
         with open(directory + filename) as f:
             lines = f.read()
             print (lines)
-            close(f)
+            f.close()
         continue
     else:
         continue
 
 
-
+print analyser.best_match_for("1.txt", path=directory)
