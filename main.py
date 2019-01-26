@@ -5,10 +5,10 @@ directory = './data/'
 
 for filename in os.listdir(directory):
     if filename.endswith(".txt"):
-        f = open(directory + filename)
-        lines = f.read()
-        print (lines)
-
+        with open(directory + filename) as f:
+            lines = f.read()
+            print (lines)
+            close(f)
         continue
     else:
         continue
