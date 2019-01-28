@@ -1,5 +1,15 @@
 from os import listdir
 
+def profile(input_file):
+    user_profile = {'Books':[]}
+    for line_number,line in enumerate(input_file):
+        if line_number < 8:
+            key,value= line.rstrip().split(":",2)
+            user_profile[key] = value
+        if line_number >9:
+            user_profile['Books'].append(line.rstrip())
+    return user_profile
+
 
 def get_book_list(input_file):
     """
