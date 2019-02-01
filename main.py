@@ -4,7 +4,8 @@ from reader import profile
 
 
 directory = './data/'
-user_profiles={}
+male_profiles={}
+female_profiles={}
 
 def print_profiles(profiles):
     field_names = ('Name', 'Gender', 'Country', 'Acceptable_country', 'Age', 'Acceptable_age_range', 'Likes', 'Dislikes')
@@ -19,8 +20,12 @@ def print_profiles(profiles):
 for filename in os.listdir(directory):
     if filename.endswith(".txt"):
         with open(directory + filename) as f:
-            user_profiles[filename]=profile(f)
-
+            profiledict = profile(f)
+            for x in profiledict['Gender']:
+                if x == 'Female' or x == 'F' or x == 'f':
+                    female_profiles[filename]=profiledict
+                elif x == "Male" or x == "M" or x == "m":
+                    male_profiles[filename]=profiledict
 
 print analyser.best_match_for("1.txt", path=directory)
 print_profiles(user_profiles)
