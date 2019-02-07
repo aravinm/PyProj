@@ -24,6 +24,7 @@ def female_to_male_country_match(male_profiles, female_profiles):
 
     for femaleprofile in female_profiles.values():
 
+
         matched_profiles_score[femaleprofile['Name']] = {}
 
         for maleprofile in male_profiles.values():
@@ -50,7 +51,6 @@ def all_profile_country_match(male_profiles, female_profiles):
         matched_profiles_score[maleprofile['Name']] = {}
 
         for femaleprofile in female_profiles.values():
-
             if maleprofile['Country'] in femaleprofile['Acceptable_country'] and femaleprofile['Country'] in \
                     maleprofile['Acceptable_country']:
                 matched_profiles_score[maleprofile['Name']][femaleprofile['Name']] = '2'
@@ -63,7 +63,6 @@ def all_profile_country_match(male_profiles, female_profiles):
                 matched_profiles_score[maleprofile['Name']][femaleprofile['Name']] = '0'
 
     for femaleprofile in female_profiles.values():
-
         matched_profiles_score[femaleprofile['Name']] = {}
 
         for maleprofile in male_profiles.values():

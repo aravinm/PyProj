@@ -1,10 +1,16 @@
 from os import listdir
 
+
+
 def profile(input_file):
     user_profile = {'Books':[]}
     for line_number,line in enumerate(input_file):
         if line_number < 8:
-            key,value= line.rstrip().split(":",2)
+            key,value = line.rstrip().split(":",2)
+            if line_number == 3:
+                value = [c.strip() for c in value.split(",")]
+            else:
+                value = value.strip()
             user_profile[key] = value
         if line_number >9:
             user_profile['Books'].append(line.rstrip())
@@ -27,6 +33,21 @@ def get_book_list(input_file):
             is_book = True
     return title_list  # ,name
 
+def getLikes(dict):
+    profiledict = dict
+    listoflikes = []
+    listoflikes = profiledict['Likes'].rstrip().split(',',)
+    for x, y in enumerate(listoflikes):
+        listoflikes[x] = y.replace(" ", "")
+    return listoflikes
+
+def getDislikes(dict):
+    profiledict = dict
+    listoflikes = []
+    listoflikes = profiledict['Dislikes'].rstrip().split(',',)
+    for x, y in enumerate(listoflikes):
+        listoflikes[x] = y.replace(" ",- "")
+    return listoflikes
 
 def get_interests(path="./data/profiles/"):
     """
