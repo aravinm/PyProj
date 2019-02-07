@@ -1,6 +1,8 @@
 import os
 import analyser
+import LDcomp
 from reader import profile
+from __future__ import division
 
 
 directory = './data/'
@@ -27,3 +29,7 @@ for filename in os.listdir(directory):
 
 print analyser.best_match_for("1.txt", path=directory)
 print_profiles(user_profiles)
+#To get a list of scores for all male and female score for likes and dislikes
+malefemaleLD = malefemaleLD(malescoreLD(male_profiles,female_profiles),femalescoreLD(male_profiles,femaleprofiles))
+#Using text file to find top 3 likes dislike matches
+LDMatch('1.txt',directory)
