@@ -102,84 +102,43 @@ def malefemaleLD(maledict,femaledict):
     return z
     
 #comparing a user(filename) to all the other genders and print the top 3 matches. 2 variabled called should be filename and directory
-def LDMatch(filename,directory):
+def LDMatch(filename, profiledict, n=3):
     scorelist = {}
-    with open(directory + filename) as f:
-        profiledict = profile(f)
-        if 'Female' in profiledict['Gender'] or 'F' in profiledict['Gender'] or 'f' in profiledict['Gender']:
-            malescore = {}
-            for x in male_profiles:
-                maleprofile, femaleprofile = male_profiles[x], profiledict
-                mlike, mdislike, flike, fdislike = \
-                       getLikes(maleprofile), \
-                       getDislikes(maleprofile), \
-                       getLikes(femaleprofile), \
-                       getDislikes(femaleprofile)
-                similarlikes, similardislikes, likedislike, dislikelike, totalm, totalf = \
-                              len(set(mlike) & set(flike)), \
-                              len(set(mdislike) & set(fdislike)), \
-                              len(set(mlike) & set(fdislike)), \
-                              len(set(mdislike) & set(flike)), \
-                              len(mlike) + len(mdislike), \
-                              len(flike) + len(fdislike)
-                totalsim = similarlikes + similardislikes
-                totaldif = likedislike + dislikelike
-                score = totalsim - totaldif
-                mpercentage = score / totalm * 100
-                fpercentage = score / totalf * 100
-                finalscore = round((mpercentage + fpercentage) / 2 ,2)
-                
-                if finalscore < 0 :
-                    finalscore = 0
-                    fname,mname = femaleprofile['Name'], maleprofile['Name']
-                    pairname = mname.strip() + "+" + fname.strip()
-                    scorelist[pairname] = float(finalscore)         
-                else:
-                    fname,mname = femaleprofile['Name'], maleprofile['Name']
-                    pairname = mname.strip() + "+" + fname.strip()
-                    scorelist[pairname] = float(finalscore)
-                   
-        elif 'Male' in profiledict['Gender'] or 'M' in profiledict['Gender'] or 'm' in profiledict['Gender']:
-            femalescore = {}
-            for x in female_profiles:
-                maleprofile, femaleprofile = profiledict, female_profiles[x]
-                mlike, mdislike, flike, fdislike = \
-                       getLikes(maleprofile), \
-                       getDislikes(maleprofile), \
-                       getLikes(femaleprofile), \
-                       getDislikes(femaleprofile)
-                similarlikes, similardislikes, likedislike, dislikelike, totalm, totalf = \
-                              len(set(mlike) & set(flike)), \
-                              len(set(mdislike) & set(fdislike)), \
-                              len(set(mlike) & set(fdislike)), \
-                              len(set(mdislike) & set(flike)), \
-                              len(mlike) + len(mdislike), \
-                              len(flike) + len(fdislike)
-                totalsim = similarlikes + similardislikes
-                totaldif = likedislike + dislikelike
-                score = totalsim - totaldif
-                mpercentage = score / totalm * 100
-                fpercentage = score / totalf * 100
-                finalscore = round((mpercentage + fpercentage) / 2 ,2)
-                
-                if finalscore < 0 :
-                    finalscore = 0
-                    fname,mname = femaleprofile['Name'], maleprofile['Name']
-                    pairname = mname.strip() + "+" + fname.strip()
-                    scorelist[pairname] = float(finalscore)
-                    
-                else:
-                    fname,mname = femaleprofile['Name'], maleprofile['Name']
-                    pairname = mname.strip() + "+" + fname.strip()
-                    scorelist[pairname] = float(finalscore)
-    sortedscore = sorted(scorelist.items(), key=lambda x: x[1])
-    firstmatch, secondmatch, thirdmatch = \
-                sortedscore[len(sortedscore)-1],sortedscore[len(sortedscore)-2],sortedscore[len(sortedscore)-3]
-    firstpair, secondpair,thirdpair = \
-               str(firstmatch[0]).replace('+'," and "), \
-               str(secondmatch[0]).replace('+'," and "), \
-               str(thirdmatch[0]).replace('+'," and ")
-    print "The top three matches for likes and dislikes with compatibility percentages are:"
-    print firstpair,"%10s" %firstmatch[1]
-    print secondpair,"%10s" %secondmatch[1]
-    print thirdpair,"%10s" %thirdmatch[1]
+    if filename in profiledict['m']:
+        suitor = profiledict['m'][filename]
+        potential_partners=profiledict['f']
+    elif filename in profiledict['f']:
+        suitor = profiledict['f'][filename]
+        potential_partners = profiledict['m']
+
+    for id in potential_partners:
+        partner = potential_partners[id]
+        mlike, mdislike, flike, fdislike = \
+               getLikes(partner), \
+               getDislikes(partner), \
+               getLikes(suitor), \
+               getDislikes(suitor)
+        similarlikes, similardislikes, likedislike, dislikelike, totalm, totalf = \
+                      len(set(mlike) & set(flike)), \
+                      len(set(mdislike) & set(fdislike)), \
+                      len(set(mlike) & set(fdislike)), \
+                      len(set(mdislike) & set(flike)), \
+                      len(mlike) + len(mdislike), \
+                      len(flike) + len(fdislike)
+        totalsim = similarlikes + similardislikes
+        totaldif = likedislike + dislikelike
+        score = totalsim - totaldif
+        mpercentage = score / totalm * 100
+        fpercentage = score / totalf * 100
+        finalscore = round((mpercentage + fpercentage) / 2 ,2)
+        if finalscore < 0 :
+            finalscore = 0
+            fname,mname = suitor['Name'], partner['Name']
+            pairname = mname.strip() + "+" + fname.strip()
+            scorelist[pairname] = float(finalscore)
+        else:
+            fname,mname = suitor['Name'], partner['Name']
+            pairname = mname.strip() + "+" + fname.strip()
+            scorelist[pairname] = float(finalscore)
+
+    return sorted(scorelist.items(), key=lambda x: x[1], reverse=True)[:n]
