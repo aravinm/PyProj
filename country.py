@@ -1,33 +1,3 @@
-import os
-
-directory = "C:/Users/yum/Desktop/SIT/ICT1002-Prog fundamentals/Project/Sample data for assignment 1/"
-male_profiles = {}
-female_profiles = {}
-
-
-def profile(input_file):
-    user_profile = {'Books': []}
-    for line_number, line in enumerate(input_file):
-        if line_number < 8:
-            key, value = line.rstrip().split(":", 2)
-            user_profile[key] = value
-        if line_number > 9:
-            user_profile['Books'].append(line.rstrip())
-    return user_profile
-
-
-for filename in os.listdir(directory):
-    if filename.endswith(".txt"):
-        with open(directory + filename) as f:
-            profiledict = profile(f)
-            if "Female" in profiledict['Gender'] or "female" in profiledict['Gender'] or "F" in profiledict[
-                'Gender'] or "f" in profiledict['Gender']:
-                female_profiles[filename] = profiledict
-            elif "Male" in profiledict['Gender'] or "male" in profiledict['Gender'] or "M" in profiledict[
-                'Gender'] or "m" in profiledict['Gender']:
-                male_profiles[filename] = profiledict
-
-
 def male_to_female_country_match(male_profiles, female_profiles):
     matched_profiles_score = {}
 
