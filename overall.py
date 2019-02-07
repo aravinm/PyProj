@@ -1,18 +1,9 @@
-def country_reader(x,y):
-    d ={'Michael Jackson':{'Carol':1,'karen':2},'Kevin':{'Carol':2}}
-    score = d[x][y]
-    return score
-
-
-def age_reader(x,y):
-    a ={'Michael Jackson':{'Carol':1,'karen':2},'Kevin':{'Carol':2}}
-    ascore = a[x][y]
-    return ascore
+def reader(x,y,d ={'Michael Jackson':{'Carol':1,'karen':2},'Kevin':{'Carol':2}}):
+    return d[x][y]
 
 
 def final_score(a,b,c,d):
-    final = a * b * c * d
-    return final
+    return a * b * c * d
 
 
 # Temporary input
@@ -21,8 +12,8 @@ girlName = raw_input("Girl Name")
 # End of temporary input
 
 countryMultiplier = 1.0
-cMatchscore = country_reader(guyName, girlName)
-aMatchscore = age_reader(guyName, girlName)
+cMatchscore = reader(guyName, girlName)
+aMatchscore = reader(guyName, girlName)
 
 if cMatchscore == 0:
     countryMultiplier = 0.0
