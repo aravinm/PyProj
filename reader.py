@@ -32,16 +32,6 @@ def get_book_list(input_file):
             is_book = True
     return title_list  # ,name
 
-def getLikes(dict):
-    return  [x.strip for x in dict['Likes'].split(',',)]
-
-def getDislikes(dict):
-    profiledict = dict
-    listoflikes = []
-    listoflikes = profiledict['Dislikes'].rstrip().split(',',)
-    for x, y in enumerate(listoflikes):
-        listoflikes[x] = y.replace(" ",- "")
-    return listoflikes
 
 def get_interests(path="./data/profiles/"):
     """
