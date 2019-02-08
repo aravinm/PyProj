@@ -1,12 +1,15 @@
 def match(suitor, partner):
-    totalsim = len(partner['Likes'] & suitor['Likes']) \
-               + len(partner['Dislikes'] & suitor['Dislikes'])
-    totaldif = len(partner['Likes'] & suitor['Dislikes']) \
-               + len(partner['Dislikes'] & suitor['Likes'])
+    p_likes,s_likes,p_dislikes,s_dislikes = \
+        partner['Likes'], \
+        suitor['Likes'], \
+        partner['Dislikes'], \
+        suitor['Dislikes']
+    totalsim = len(p_likes & s_likes | p_dislikes & s_dislikes)
+    totaldif = len(p_likes & s_dislikes | s_likes & p_dislikes)
     score = totalsim - totaldif
     totalm, totalf = \
-        len(partner['Likes']) + len(partner['Dislikes']), \
-        len(suitor['Likes']) + len(suitor['Dislikes'])
+        len(p_likes | p_dislikes), \
+        len(s_likes | s_dislikes)
     mpercentage = score / totalm * 100
     fpercentage = score / totalf * 100
     finalscore = round((mpercentage + fpercentage) / 2, 2)
