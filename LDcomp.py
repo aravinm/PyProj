@@ -97,18 +97,13 @@ def LDMatch(suitor, potential_partners, n=3):
     scorelist = {}
     for id in potential_partners:
         partner = potential_partners[id]
-        mlike, mdislike, flike, fdislike = \
-               partner['Likes'], \
-               partner['Dislikes'], \
-               suitor['Likes'], \
-               suitor['Dislikes']
         similarlikes, similardislikes, likedislike, dislikelike, totalm, totalf = \
-                      len(set(mlike) & set(flike)), \
-                      len(set(mdislike) & set(fdislike)), \
-                      len(set(mlike) & set(fdislike)), \
-                      len(set(mdislike) & set(flike)), \
-                      len(mlike) + len(mdislike), \
-                      len(flike) + len(fdislike)
+                      len(set(partner['Likes']) & set(suitor['Likes'])), \
+                      len(set(partner['Dislikes']) & set(suitor['Dislikes'])), \
+                      len(set(partner['Likes']) & set(suitor['Dislikes'])), \
+                      len(set(partner['Dislikes']) & set(suitor['Likes'])), \
+                      len(partner['Likes']) + len(partner['Dislikes']), \
+                      len(suitor['Likes']) + len(suitor['Dislikes'])
         totalsim = similarlikes + similardislikes
         totaldif = likedislike + dislikelike
         score = totalsim - totaldif
