@@ -1,10 +1,10 @@
 #function to get likes, used in the below functions
 def getLikes(dict):
-    return [y.replace(" ", "") for y in dict['Likes'].rstrip().split(',',)]
+    return [y.strip() for y in dict['Likes'].split(',',)]
 
 #function to get dislikes, used in the below functions
 def getDislikes(dict):
-    return [y.replace(" ", "") for y in dict['Dislikes'].rstrip().split(',',)]
+    return [y.strip() for y in dict['Dislikes'].split(',',)]
 
 
 #function to get dictionary of scores for each male to all females
