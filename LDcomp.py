@@ -1,19 +1,11 @@
 #function to get likes, used in the below functions
 def getLikes(dict):
-    listoflikes = []
-    listoflikes = dict['Likes'].rstrip().split(',',)
-    for x, y in enumerate(listoflikes):
-        listoflikes[x] = y.replace(" ", "")
-    return listoflikes
+    return [y.replace(" ", "") for y in dict['Likes'].rstrip().split(',',)]
 
 #function to get dislikes, used in the below functions
 def getDislikes(dict):
-    profiledict = dict
-    listoflikes = []
-    listoflikes = profiledict['Dislikes'].rstrip().split(',',)
-    for x, y in enumerate(listoflikes):
-        listoflikes[x] = y.replace(" ", "")
-    return listoflikes
+    return [y.replace(" ", "") for y in dict['Dislikes'].rstrip().split(',',)]
+
 
 #function to get dictionary of scores for each male to all females
 def malescoreLD(maleprof, femaleprof):
