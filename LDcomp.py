@@ -1,8 +1,7 @@
 #function to get likes, used in the below functions
 def getLikes(dict):
-    profiledict = dict
     listoflikes = []
-    listoflikes = profiledict['Likes'].rstrip().split(',',)
+    listoflikes = dict['Likes'].rstrip().split(',',)
     for x, y in enumerate(listoflikes):
         listoflikes[x] = y.replace(" ", "")
     return listoflikes
@@ -102,15 +101,8 @@ def malefemaleLD(maledict,femaledict):
     return z
     
 #comparing a user(filename) to all the other genders and print the top 3 matches. 2 variabled called should be filename and directory
-def LDMatch(filename, profiledict, n=3):
+def LDMatch(suitor, potential_partners, n=3):
     scorelist = {}
-    if filename in profiledict['m']:
-        suitor = profiledict['m'][filename]
-        potential_partners=profiledict['f']
-    elif filename in profiledict['f']:
-        suitor = profiledict['f'][filename]
-        potential_partners = profiledict['m']
-
     for id in potential_partners:
         partner = potential_partners[id]
         mlike, mdislike, flike, fdislike = \
