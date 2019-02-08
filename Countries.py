@@ -42,6 +42,11 @@ def female_to_male_country_match(male_profiles, female_profiles):
 
     return matched_profiles_score
 
+def match(suitor, partner):
+    if suitor['Country'] in partner['Acceptable_country']:
+        return 1
+    else:
+        return 0
 
 def all_profile_country_match(male_profiles, female_profiles):
     matched_profiles_score = {}
