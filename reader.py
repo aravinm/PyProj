@@ -7,7 +7,7 @@ def profile(input_file):
         if line_number < 8:
             key,value = line.rstrip().split(":",2)
             if line_number in (3,6,7):
-                value = [c.strip() for c in value.split(",") if c]
+                value = set(c.strip() for c in value.split(",") if c)
             else:
                 value = value.strip()
             user_profile[key] = value
