@@ -6,12 +6,8 @@ def profile(input_file):
     for line_number,line in enumerate(input_file):
         if line_number < 8:
             key,value = line.rstrip().split(":",2)
-            if line_number == 3:
+            if line_number in (3,6,7):
                 value = [c.strip() for c in value.split(",") if c]
-            elif line_number==6:
-                #print value
-                #value = [c.strip() for c in value.split(",") if c]
-                print value
             else:
                 value = value.strip()
             user_profile[key] = value

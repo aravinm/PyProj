@@ -98,10 +98,10 @@ def LDMatch(suitor, potential_partners, n=3):
     for id in potential_partners:
         partner = potential_partners[id]
         mlike, mdislike, flike, fdislike = \
-               getLikes(partner), \
-               getDislikes(partner), \
-               getLikes(suitor), \
-               getDislikes(suitor)
+               partner['Likes'], \
+               partner['Dislikes'], \
+               suitor['Likes'], \
+               suitor['Dislikes']
         similarlikes, similardislikes, likedislike, dislikelike, totalm, totalf = \
                       len(set(mlike) & set(flike)), \
                       len(set(mdislike) & set(fdislike)), \
