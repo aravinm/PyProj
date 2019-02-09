@@ -4,8 +4,6 @@ import Books
 import Countries
 import LDcomp
 from reader import profile
-from matching import merge_dicts
-
 #from __future__ import division
 
 
@@ -22,6 +20,13 @@ def print_profiles(profiles):
             print book
         print
 
+
+def merge_dicts(x,y):
+    z=x.copy()
+    z.update(y)
+    return z
+
+
 for filename in os.listdir(directory):
     if filename.endswith(".txt"):
         with open(directory + filename) as f:
@@ -30,10 +35,14 @@ for filename in os.listdir(directory):
                 female_profiles[filename]=profiledict
             elif 'Male' in profiledict['Gender'] or 'M' in profiledict['Gender'] or 'm' in profiledict['Gender']:
                 male_profiles[filename]=profiledict
+
 profiles =  merge_dicts(male_profiles, female_profiles)
 
 
-print Books.best_match_for("1.txt", path=directory)
+print 'Books'
+print Books.all_matches(male_profiles,female_profiles,True)
+print Books.best_match(profiles['8.txt'],male_profiles, n=100)
+
 #To get a list of scores for all male and female score for likes and dislikes
 #malefemaleLD = malefemaleLD(malescoreLD(male_profiles,female_profiles),femalescoreLD(male_profiles,femaleprofiles))
 #Using text file to find top 3 likes dislike matches

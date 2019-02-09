@@ -1,6 +1,6 @@
-from reader import get_interests
 from collections import Counter
 import re
+import matching
 
 # todo import nltk word stemming?
 
@@ -9,17 +9,7 @@ extracts meaningful words from the list of books then then count the frequency
 """
 
 
-def sanitised(sentence):
-    # return list of word in sentence after converting to lower case
-    sentence = sentence.lower()
-    sentence = re.sub('[^a-z ]', '', sentence)
-    # remove not alphabetic characters
-    sentence = sentence.strip().split()
-    sentence = word_stems_of(sentence)
-    return sentence
-
-
-def word_stems_of(words):
+def word_stems(words):
     # tries to get base word so it can count plural,singulaer, noun,verb,etc forms as the same word
     # very crude and not perfect, will cut experiences to experienc, summation to summa , will not equate christianity to christian,etc
     word_stems = []
@@ -35,7 +25,7 @@ def word_stems_of(words):
     return word_stems
 
 
-def remove_stop_words_from(words):
+def stop_words_removed(words):
     # removes words that are to be ignore when calculating similarity
     stop_words = ('a', 'about', 'above', 'after', 'again', 'against', 'all', 'am', 'an', 'and', 'any', 'are', "aren't",
                   'as', 'at', 'be', 'because', 'been', 'before', 'being', 'below', 'between', 'both', 'but', 'by',
@@ -53,72 +43,41 @@ def remove_stop_words_from(words):
                   'where', "where's", 'which', 'while', 'who', "who's", 'whom', 'why', "why's", 'with', "won't",
                   'would', "wouldn't", 'you', "you'd", "you'll", "you're", "you've", 'your', 'yours', 'yourself',
                   'yourselves')
-    stop_words_removed = [word for word in words if word not in stop_words]
-    return stop_words_removed
+    return [word for word in words if word not in stop_words]
 
 
-def shared_interest_of(user1, user2, interests_d):
-    shared_interests = [interest for interest in interests_d[user1] if interest in interests_d[user2]]
-    return shared_interests
+def sanitised(sentence):
+    # return list of word in sentence after converting to lower case
+    sentence = sentence.lower()
+    sentence = re.sub('[^a-z ]', '', sentence)
+    # remove not alphabetic characters
+    sentence = sentence.strip().split()
+    sentence = word_stems(sentence)
+    sentence = stop_words_removed(sentence)
+    return sentence
 
 
-def shared_interests_score(user1, user2, interests_d, return_data=False):
-    # todo define metric for normalizing score
-    if return_data:
-        score = 0
-        data = []
-        for interest in shared_interest_of(user1, user2, interests_d):
-            data.append((interest, interests_d[user1][interest], interests_d[user2][interest]))
-            score += interests_d[user1][interest]+interests_d[user2][interest]
-        data.sort(reverse=True, key=lambda s:s[2]+s[1])
-        return score, data
-
-    else:
-        score = 0
-        for interest in shared_interest_of(user1, user2, interests_d):
-            score += interests_d[user1][interest]+interests_d[user2][interest]
-        return score
+def interests(sentences):
+    interests_count = Counter()
+    for sentence in sentences:
+        interests_count += Counter(sanitised(sentence))
+    return interests_count
 
 
-def best_match(user, user_interest_d, n=3):
-    matches = Counter()
-    potential_partners = user_interest_d.keys()
-    potential_partners.remove(user)
-    for potential_partner in potential_partners:
-        matches[user] = shared_interests_score(user, potential_partner, user_interest_d)
-        matches[potential_partner] = shared_interests_score(user, potential_partner, user_interest_d)
-    return matches.most_common(n)
+def match(suitor, partner):
+    s_interests,p_interests = interests(suitor['Books']),interests(partner['Books'])
+    shared_interests = set(s_interests) & set(p_interests)
+    score = 0
+    for interest in shared_interests:
+        score +=  s_interests[interest] + p_interests[interest]
+    return score
 
 
-def print_all_best_match(path="./data/"):
-    user_interests = get_interests(path)
-    user_interest_count={}
-    best_matches = {}
-    for user in user_interests:
-        interests = Counter()
-        for title in user_interests[user]:
-            title = sanitised(title)
-            title = remove_stop_words_from(title)
-            interests += Counter(title)
-            user_interest_count[user] = interests
-    for user in user_interest_count:
-        best_matches[user] = best_match(user, user_interest_count)
-        print "best matches for {0} are {1[0][0]}(score:{1[0][1]}), {1[1][0]}(score:{1[1][1]}), {1[2][0]}(score:{1[2][1]})" .format(user,best_matches[user])
+@matching.best_match
+def best_match(suitor, potential_partners, n=3):
+    return match(suitor, potential_partners)
 
 
-def best_match_for(cur_user, path="./data/"):
-    user_interests = get_interests(path)
-    user_interest_count={}
-    best_matches = {}
-    for user in user_interests:
-        interests = Counter()
-        for title in user_interests[user]:
-            title = sanitised(title)
-            title = remove_stop_words_from(title)
-            interests += Counter(title)
-            user_interest_count[user] = interests
-    best_matches[cur_user] = best_match(cur_user, user_interest_count)
-    return "best matches for {0} are {1[0][0]}(score:{1[0][1]}), {1[1][0]}(score:{1[1][1]}), {1[2][0]}(score:{1[2][1]})" .format(cur_user, best_matches[cur_user])
-
-if __name__ == '__main__':
-    print_all_best_match()
+@matching.all_matches
+def all_matches(suitors, partners, symmetric=False):
+    return best_match(suitors, partners)

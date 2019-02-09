@@ -1,9 +1,3 @@
-def merge_dicts(x,y):
-    z=x.copy()
-    z.update(y)
-    return z
-
-
 def best_match(match_on):
     def wrapped(suitor, potential_partners, n=3):
         score_list = {}
