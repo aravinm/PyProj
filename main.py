@@ -4,6 +4,7 @@ import Books
 import Countries
 import LDcomp
 import overall
+import matching
 from reader import profile
 #from __future__ import division
 
@@ -55,5 +56,16 @@ print Age.all_matches(male_profiles,female_profiles)
 print Age.matches(profiles['7.txt'],female_profiles)
 
 print 'likes'
-print LDcomp.matches(profiles['9.txt'], male_profiles)
+print LDcomp.all_matches(male_profiles, female_profiles)
 print LDcomp.matches(profiles['7.txt'],female_profiles)
+
+print 'overall'
+print overall.all_matches(male_profiles, female_profiles)
+print overall.matches(profiles['7.txt'],female_profiles)
+
+print
+print 'best match'
+print overall.best_match(male_profiles, female_profiles)
+print overall.best_match(female_profiles, male_profiles)
+print overall.best_match(male_profiles, female_profiles, n=None, symmetric=True)
+print overall.best_match(male_profiles, female_profiles, symmetric=True)
