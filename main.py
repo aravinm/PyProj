@@ -1,16 +1,8 @@
 import os
-import Age
-import Books
-import Countries
-import LDcomp
-import overall
-import matching
+import Age,Books,Countries,LDcomp,overall
 from reader import profile
-#from __future__ import division
+from folderpathinput import folder_input
 
-
-directory = './data/'
-male_profiles, female_profiles = {},{}
 
 def print_profiles(profiles):
     field_names = ('Name', 'Gender', 'Country', 'Acceptable_country', 'Age', 'Acceptable_age_range', 'Likes', 'Dislikes')
@@ -28,7 +20,11 @@ def merge_dicts(x,y):
     z.update(y)
     return z
 
+directory = None
+while directory is None:
+    directory = folder_input()
 
+male_profiles, female_profiles = {},{}
 for filename in os.listdir(directory):
     if filename.endswith(".txt"):
         with open(directory + filename) as f:
@@ -37,7 +33,6 @@ for filename in os.listdir(directory):
                 female_profiles[filename]=profiledict
             elif 'Male' in profiledict['Gender'] or 'M' in profiledict['Gender'] or 'm' in profiledict['Gender']:
                 male_profiles[filename]=profiledict
-
 profiles =  merge_dicts(male_profiles, female_profiles)
 
 
