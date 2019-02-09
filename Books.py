@@ -73,11 +73,11 @@ def match(suitor, partner):
     return score
 
 
-@matching.best_match
-def best_match(suitor, potential_partners, n=3):
+@matching.matches
+def matches(suitor, potential_partners):
     return match(suitor, potential_partners)
 
 
 @matching.all_matches
 def all_matches(suitors, partners, symmetric=False):
-    return best_match(suitors, partners)
+    return matches(suitors, partners)

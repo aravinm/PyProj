@@ -17,10 +17,10 @@ def match(suitor, partner):
     return round(score,2)
     
 #comparing a user(filename) to all the other genders and print the top 3 matches. 2 variabled called should be filename and directory
-@matching.best_match
-def best_match(suitor, partners, n=3):
-    return match(suitor, partners)
+@matching.matches
+def matches(suitor, potential_partners):
+    return match(suitor, potential_partners)
 
 @matching.all_matches
 def all_matches(suitors, partners,symmetric=False):
-    return best_match(suitors, partners)
+    return matches(suitors, partners)
