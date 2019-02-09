@@ -1,4 +1,5 @@
 import os
+import Age
 import Books
 import Countries
 import LDcomp
@@ -36,7 +37,14 @@ print Books.best_match_for("1.txt", path=directory)
 #To get a list of scores for all male and female score for likes and dislikes
 #malefemaleLD = malefemaleLD(malescoreLD(male_profiles,female_profiles),femalescoreLD(male_profiles,femaleprofiles))
 #Using text file to find top 3 likes dislike matches
+print 'Countries'
 print Countries.all_matches(male_profiles,female_profiles,True)
 print Countries.best_match(profiles['8.txt'],male_profiles, n=100)
+
+print 'Age'
+print Age.all_matches(male_profiles,female_profiles,True)
+print Age.best_match(profiles['8.txt'],male_profiles, n=100)
+
+print 'likes'
 print LDcomp.all_matches(male_profiles,female_profiles,True)
 print LDcomp.best_match(profiles['9.txt'], male_profiles, n=100)
