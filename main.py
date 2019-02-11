@@ -4,6 +4,7 @@ import Books
 import Countries
 import LDcomp
 import overall
+import csv
 import matching
 from reader import profile
 #from __future__ import division
@@ -69,3 +70,32 @@ print overall.best_match(male_profiles, female_profiles)
 print overall.best_match(female_profiles, male_profiles)
 print overall.best_match(male_profiles, female_profiles, n=None, symmetric=True)
 print overall.best_match(male_profiles, female_profiles, symmetric=True)
+
+
+def writeCsv(data):
+    with open('tt.csv', 'ab') as csvfile:
+        spamwriter = csv.writer(csvfile,
+                                quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        spamwriter.writerow(data)
+tempList1=[]
+for index, i in enumerate(overall.best_match(male_profiles, female_profiles)):
+    # print overall.best_match(male_profiles, female_profiles)
+    print profiles[overall.best_match(male_profiles, female_profiles)[index][0]]["Name"]
+    tempList1.append(profiles[overall.best_match(male_profiles, female_profiles)[index][0]]["Name"])
+writeCsv(["Best Match for Male"])
+
+writeCsv(tempList1)
+
+tempList2=[]
+for index, i in enumerate(overall.best_match(female_profiles, male_profiles)):
+    print profiles[overall.best_match(female_profiles, male_profiles)[index][0]]["Name"]
+    tempList2.append(profiles[overall.best_match(female_profiles, male_profiles)[index][0]]["Name"])
+writeCsv(["Best Match for Female"])
+writeCsv(tempList2)
+
+tempList3=[]
+for index, i in enumerate(overall.best_match(male_profiles, female_profiles, n=None, symmetric=True)):
+    print profiles[overall.best_match(male_profiles, female_profiles, n=None, symmetric=True)[index][0]]["Name"]
+    tempList3.append(profiles[overall.best_match(male_profiles, female_profiles, n=None, symmetric=True)[index][0]]["Name"])
+writeCsv(["Best Match for Female & Male"])
+writeCsv(tempList3)
