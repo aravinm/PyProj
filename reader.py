@@ -1,3 +1,6 @@
+import os
+
+
 def profile(input_file):
     user_profile = {'Books':[]}
     for line_number,line in enumerate(input_file):
@@ -17,3 +20,20 @@ def profile(input_file):
             user_profile['Books'].append(line.rstrip())
     return user_profile
 
+def profiles_from(directory):
+    profiles = {}
+    for filename in os.listdir(directory):
+        if filename.endswith(".txt"):
+            with open(directory + filename) as f:
+                profiles[filename] = profile(f)
+    return profiles
+
+def read_txt(name,directory='' ):
+    with open(directory+name) as f:
+        return f.read()
+
+def read_all_from(profiles):
+    profile_text = ''
+    for filename in profiles:
+        profile_text += read_txt(filename)+'\n\n'
+    return profile_text
