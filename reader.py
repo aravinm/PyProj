@@ -1,6 +1,5 @@
 import os
 
-
 def profile(input_file):
     user_profile = {'Books':[]}
     for line_number,line in enumerate(input_file):
