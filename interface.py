@@ -15,6 +15,7 @@ class Interface:
         self.cur_dir = tk.StringVar()
         self.cur_user = tk.StringVar()
         self.displayed_profile_text = tk.StringVar()
+        self.male_profiles,self.female_profiles = None, None
 
         self.style = ttk.Style()
         self.style.theme_use("clam")
@@ -130,6 +131,8 @@ class Interface:
 
     def set_cur_user(self):
         self.cur_user.set(self.get_cur_selected_value())
+        self.update_profiles()
+
 
     def update_file_list(self):
         self.li.delete(0,'end')
@@ -138,6 +141,19 @@ class Interface:
                 if  file_name.endswith('.txt'):
                     self.li.insert('end', file_name)
         self.disable_if_empty()
+
+
+    def update_profiles(self):
+        self.male_profiles, self.female_profiles =\
+            reader.profiles_from(self.cur_dir.get())
+        print self.male_profiles, self.female_profiles
+
+
+    def get_gender(self, key):
+        if key in self.female_profiles:
+            return 'F'
+        elif key in self.male_profiles:
+            return 'M'
 
 
 rt = tk.Tk()
