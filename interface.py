@@ -5,6 +5,7 @@ import tkFileDialog as fd
 import os
 
 import reader
+import Age,Books,Countries,LDcomp,overall
 from utils import ignored
 
 
@@ -76,6 +77,10 @@ class Interface:
         self.disable_if_empty()
 
         self.match_page = ttk.Frame(self.notebook)
+        self.match = ttk.Treeview(
+            self.match_page,
+            columns=('name', 'score')
+        )
 
         self.notebook.grid(column=0, row=1)
         self.notebook.add(self.dir_page, text='folders')
@@ -132,6 +137,7 @@ class Interface:
     def set_cur_user(self):
         self.cur_user.set(self.get_cur_selected_value())
         self.update_profiles()
+        self.show_match()
 
 
     def update_file_list(self):
@@ -146,14 +152,48 @@ class Interface:
     def update_profiles(self):
         self.male_profiles, self.female_profiles =\
             reader.profiles_from(self.cur_dir.get())
-        print self.male_profiles, self.female_profiles
 
-
-    def get_gender(self, key):
+    def get_user_profile(self, key):
         if key in self.female_profiles:
-            return 'F'
+            return self.female_profiles[key]
         elif key in self.male_profiles:
-            return 'M'
+            return self.male_profiles[key]
+        else:
+            return None
+
+    def get_potential_partners(self, key):
+        if key in self.female_profiles:
+            return self.male_profiles
+        elif key in self.male_profiles:
+            return self.female_profiles
+        else:
+            return None
+
+
+    def show_match(self):
+        if 'ld' in self.match.get_children(''):
+            self.match.delete('ld')
+        map(lambda t: self.match.heading(t, text=t), self.match['columns'])
+        self.match.insert('', 'end', 'ld', text='likes / dislikes')
+        cur_user = self.get_user_profile(self.cur_user.get())
+        potential_partners = self.get_potential_partners(self.cur_user.get())
+        ld_matches = LDcomp.matches(cur_user, potential_partners)
+        print ld_matches
+        map(lambda m: self.match.insert('ld', 'end', 'ld'.join(m), text=m),
+            ld_matches
+            )
+        map(lambda m: self.match.set('ld'.join(m),
+                                     'score',
+                                     ld_matches[m]),
+            ld_matches
+            )
+        map(lambda m: self.match.set('ld'.join(m),
+                                     'name',
+                                     potential_partners[m]['Name']
+                                    ),
+            ld_matches
+            )
+        self.match.grid(column=0, row=1)
 
 
 rt = tk.Tk()
