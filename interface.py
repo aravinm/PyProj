@@ -20,6 +20,7 @@ class Interface:
         self.filter_by_country.set(True)
         self.filter_by_age = tk.BooleanVar()
         self.filter_by_age.set(True)
+        self.criteria = tk.StringVar(None, 'Overall')
         self.male_profiles,self.female_profiles = None, None
 
         self.style = ttk.Style()
@@ -98,8 +99,27 @@ class Interface:
         self.all_matches_page = ttk.Frame(self.notebook)
         self.all_matches = ttk.Treeview(
             self.all_matches_page,
-            columns=('Name', 'Country','Gender' , 'Age', 'Score')
+            columns=('Name', 'Country','Gender' , 'Age', 'Score'),
+            show = 'headings'
         )
+        self.best_match_label = tk.Label(self.all_matches_page,
+                                         text = 'show best match based on:')
+        self.likes_radio_btn = ttk.Radiobutton(self.all_matches_page,
+            text='Likes',variable=self.criteria,value='Likes',
+            command = self.update_all_matches
+                                              )
+        self.books_radio_btn = ttk.Radiobutton(self.all_matches_page,
+            text='Books',variable=self.criteria,value='Books',
+            command = self.update_all_matches
+                                              )
+        self.overall_radio_btn = ttk.Radiobutton(self.all_matches_page,
+            text='Overall',variable=self.criteria,value='Overall',
+            command = self.update_all_matches
+                                                )
+        self.best_match_label.grid(column=0, row=2, sticky='sw')
+        self.likes_radio_btn.grid(column=0,row=3, sticky='sw')
+        self.books_radio_btn.grid(column=0,row=4, sticky='sw')
+        self.overall_radio_btn.grid(column=0,row=5, sticky='sw')
 
         self.notebook.grid(column=0, row=1)
         self.notebook.add(self.dir_page, text='folders')
@@ -167,7 +187,7 @@ class Interface:
         self.update_profiles()
         self.update_profile_page()
         self.update_trees()
-        self.show_all_match(Overall)
+        self.update_all_matches()
 
 
     @staticmethod
@@ -193,6 +213,11 @@ class Interface:
         map(lambda c: self.show_match(user, partners, c),
             (Books, Likes, Overall)
             )
+
+
+    def update_all_matches(self):
+        self.show_all_match(globals()[self.criteria.get()])
+
 
     def set_cur_user(self):
         self.cur_user.set(self.get_cur_selected_value())
@@ -303,6 +328,7 @@ class Interface:
             map(lambda p: self.all_matches.insert('', 'end', p, text=p),
                 users)
             map(set_field, ('Name', 'Country', 'Gender', 'Age'))
+            map(lambda m: self.all_matches.set(m[0],'Score',m[1]),matches)
             self.all_matches.grid(column=0, row=1)
 
 

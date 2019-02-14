@@ -8,7 +8,7 @@ def match(suitor, partner, criteria=(Age, Books, Countries, Likes)):
         # Calculate final score. Country score x Age score x Shared Interest Score x likes & dislikes.
         # To change shared interest score and likes and dislikes to their respective names
         score*=criterion.match(suitor, partner)
-    return score
+    return round(score,2)
 
 
 @matching.matches
