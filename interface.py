@@ -2,7 +2,7 @@ import Tkinter as tk
 import ttk
 import tkFileDialog as fd
 
-import os
+import os,csv
 
 import reader
 import Age,Books,Countries,Likes,Overall
@@ -116,16 +116,21 @@ class Interface:
             text='Overall',variable=self.criteria,value='Overall',
             command = self.update_all_matches
                                                 )
+        self.csv_export_btn = tk.Button(self.all_matches_page
+                                        ,text = 'export matches to csv'
+                                        ,command=self.all_best_match_to_csv
+                                        )
         self.best_match_label.grid(column=0, row=2, sticky='sw')
         self.likes_radio_btn.grid(column=0,row=3, sticky='sw')
         self.books_radio_btn.grid(column=0,row=4, sticky='sw')
         self.overall_radio_btn.grid(column=0,row=5, sticky='sw')
+        self.csv_export_btn.grid(column=1,row=6, sticky='ne')
 
         self.notebook.grid(column=0, row=1)
         self.notebook.add(self.dir_page, text='folders')
         self.notebook.add(self.profile_page, text='profiles')
-        self.notebook.add(self.match_page, text='best match')
-        self.notebook.add(self.all_matches_page, text='all matches')
+        self.notebook.add(self.match_page, text='matches')
+        self.notebook.add(self.all_matches_page, text='best match')
 
 
     def get_cur_selected_value(self):
@@ -220,7 +225,8 @@ class Interface:
 
 
     def set_cur_user(self):
-        self.cur_user.set(self.get_cur_selected_value())
+        usr_name = self.get_profile_name(self.get_cur_selected_value())
+        self.cur_user.set(usr_name)
         self.update_profile_page()
         self.update_matches()
 
@@ -267,6 +273,12 @@ class Interface:
         else:
             return None
 
+    def get_profile_name(self, key):
+        profiles = self.get_user_profile(key)
+        if profiles:
+            return profiles['Name']
+        else:
+            return None
 
     def get_potential_partners(self, key):
         if key in self.female_profiles:
@@ -331,6 +343,37 @@ class Interface:
             map(lambda m: self.all_matches.set(m[0],'Score',m[1]),matches)
             self.all_matches.grid(column=0, row=1)
 
+
+    @staticmethod
+    def to_csv(name, data,title = '' , fields=''):
+        with open(name, 'ab') as out:
+            csv_out = csv.writer(out)
+            csv_out.writerow(title)
+            csv_out.writerow(fields)
+            for row in data:
+                csv_out.writerow(row)
+
+
+    def criteria_best_match_to_csv(self,criteria,file_name):
+        matches = criteria.best_match(self.female_profiles,
+                                     self.male_profiles,
+                                     n=None,
+                                     symmetric=True
+                                    )
+        data = [(self.get_profile_name(f),''.join((self.cur_dir.get(),f)),s)
+                for (f,s) in matches]
+        self.to_csv(file_name,data,
+                    title=[''.join(('Based on ',criteria.__name__))],
+                    fields=('name','file','score')
+                    )
+
+
+    def all_best_match_to_csv(self):
+        file_name = fd.asksaveasfilename(defaultextension=".csv",
+            filetypes=(("csv files","*.csv"),("all files","*.*")))
+        map(lambda d: self.criteria_best_match_to_csv(d, file_name=file_name),
+            (Overall,Books,Likes)
+            )
 
 rt = tk.Tk()
 gui = Interface(rt)
