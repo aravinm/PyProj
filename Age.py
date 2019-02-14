@@ -3,9 +3,9 @@ import matching
 
 def match(suitor, partner, symmetric = True):
     score = 0
-    if suitor['Age'] in partner['Acceptable_age_range']:
+    if suitor['Age'] in partner['Acceptable_age_range'] and symmetric:
         score += 1
-    if partner['Age'] in suitor['Acceptable_age_range'] and symmetric:
+    if partner['Age'] in suitor['Acceptable_age_range']:
         score += 1
     return score
 

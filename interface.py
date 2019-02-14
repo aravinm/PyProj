@@ -16,7 +16,8 @@ class Interface:
         self.cur_dir = tk.StringVar()
         self.cur_user = tk.StringVar()
         self.displayed_profile_text = tk.StringVar()
-        self.filter_by_country = True
+        self.filter_by_country = tk.BooleanVar()
+        self.filter_by_country.set(True)
         self.male_profiles,self.female_profiles = None, None
 
         self.style = ttk.Style()
@@ -74,13 +75,19 @@ class Interface:
         self.match_page = ttk.Frame(self.notebook)
         self.match = ttk.Treeview(
             self.match_page,
-            columns=('name', 'score')
+            columns=('Name', 'Country', 'Age', 'Score')
         )
         self.show_all_profile_btn=ttk.Button(
             self.match_page,
             text='show all profiles',
             command = self.show_all_profiles
            )
+        self.filter_by_country_check = tk.Checkbutton(
+            self.match_page,
+            text="filter by country",
+            variable=self.filter_by_country,
+            command=self.update_matches)
+
 
         self.notebook.grid(column=0, row=1)
         self.notebook.add(self.dir_page, text='folders')
@@ -148,7 +155,7 @@ class Interface:
 
     @staticmethod
     def filter_profiles(condition,cur_user, potential_partners):
-        if condition:
+        if condition.get():
             return {
                 k:v for (k,v) in potential_partners.iteritems()
                 if Countries.match(cur_user,
@@ -159,16 +166,18 @@ class Interface:
             return potential_partners
 
 
-
-    def set_cur_user(self):
-        self.cur_user.set(self.get_cur_selected_value())
-        self.update_profiles()
+    def update_matches(self):
         user = self.get_user_profile(self.cur_user.get())
         partners = self.get_potential_partners(self.cur_user.get())
         partners = self.filter_profiles(self.filter_by_country, user, partners)
         map(lambda c: self.show_match(user, partners, c),
-            (Books, Likes, Overall, Age,Countries)
+            (Books, Likes, Overall)
             )
+
+    def set_cur_user(self):
+        self.cur_user.set(self.get_cur_selected_value())
+        self.update_profiles()
+        self.update_matches()
 
 
     def update_file_list(self):
@@ -185,8 +194,10 @@ class Interface:
             reader.profiles_from(self.cur_dir.get())
         if self.male_profiles and self.female_profiles:
             self.show_all_profile_btn.grid(column=0, row=2, stick='se')
+            self.filter_by_country_check.grid(column=0, row=2, stick='sw')
         else:
             self.show_all_profile_btn.grid_forget()
+            self.filter_by_country_check.grid_forget()
 
     def get_user_profile(self, key):
         if key in self.female_profiles:
@@ -205,7 +216,15 @@ class Interface:
             return None
 
 
+
     def show_match(self, cur_user, potential_partners, criteria):
+        def set_field(field):
+            map(lambda m: self.match.set(criteria_name.join(m),
+                                         field,
+                                         potential_partners[m][field]
+                                         ),
+                matches
+                )
         criteria_name = criteria.__name__
         if criteria_name in self.match.get_children(''):
             self.match.delete(criteria_name)
@@ -219,16 +238,11 @@ class Interface:
             matches
             )
         map(lambda m: self.match.set(criteria_name.join(m),
-                                     'score',
+                                     'Score',
                                      matches[m]),
             matches
             )
-        map(lambda m: self.match.set(criteria_name.join(m),
-                                     'name',
-                                     potential_partners[m]['Name']
-                                    ),
-            matches
-            )
+        map(set_field, ('Name','Country','Age'))
         self.match.grid(column=0, row=1)
 
 rt = tk.Tk()

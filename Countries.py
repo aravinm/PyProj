@@ -3,9 +3,9 @@ import matching
 
 def match(suitor, partner, symmetric = True):
     score = 0
-    if suitor['Country'] in partner['Acceptable_country']:
+    if suitor['Country'] in partner['Acceptable_country']and symmetric:
         score += 1
-    if partner['Country'] in suitor['Acceptable_country'] and symmetric:
+    if partner['Country'] in suitor['Acceptable_country']:
         score += 1
     return score
 
