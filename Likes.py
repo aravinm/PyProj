@@ -20,7 +20,7 @@ def match(suitor, partner):
     score = float(similarity-difference)
     score = (score / len(s_likes | s_dislikes)
              + score / len(p_likes | p_dislikes))
-    score *= 0.5 * 100
+    score *= 0.5
     if score < 0:
         score = 0
     return round(score,2)
@@ -30,6 +30,11 @@ def match(suitor, partner):
 def matches(suitor, potential_partners):
     return match(suitor, potential_partners)
 
+
 @matching.all_matches
-def all_matches(suitors, partners,symmetric=False):
+def all_matches(suitors, partners, symmetric=False):
     return matches(suitors, partners)
+
+@matching.best_match
+def best_match(suitors, partners, symmetric=False):
+    return all_matches(suitors, partners, symmetric)

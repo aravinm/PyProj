@@ -95,11 +95,17 @@ class Interface:
             variable=self.filter_by_age,
             command=self.update_matches)
 
+        self.all_matches_page = ttk.Frame(self.notebook)
+        self.all_matches = ttk.Treeview(
+            self.all_matches_page,
+            columns=('Name', 'Country','Gender' , 'Age', 'Score')
+        )
 
         self.notebook.grid(column=0, row=1)
         self.notebook.add(self.dir_page, text='folders')
         self.notebook.add(self.profile_page, text='profiles')
         self.notebook.add(self.match_page, text='best match')
+        self.notebook.add(self.all_matches_page, text='all matches')
 
 
     def get_cur_selected_value(self):
@@ -158,6 +164,10 @@ class Interface:
         self.cur_dir.set(fd.askdirectory()+'/')
         self.update_file_list()
         self.displayed_profile_text.set('')
+        self.update_profiles()
+        self.update_profile_page()
+        self.update_trees()
+        self.show_all_match(Overall)
 
 
     @staticmethod
@@ -186,7 +196,7 @@ class Interface:
 
     def set_cur_user(self):
         self.cur_user.set(self.get_cur_selected_value())
-        self.update_profiles()
+        self.update_profile_page()
         self.update_matches()
 
 
@@ -202,16 +212,27 @@ class Interface:
     def update_profiles(self):
         self.male_profiles, self.female_profiles =\
             reader.profiles_from(self.cur_dir.get())
+
+
+    def update_profile_page(self):
         if self.male_profiles and self.female_profiles:
             self.show_all_profile_btn.grid(column=0, row=2, stick='se')
             self.filter_by_age_check.grid(column=0, row=3, stick='sw')
             self.filter_by_country_check.grid(column=0, row=2, stick='sw')
-
-
         else:
             self.show_all_profile_btn.grid_forget()
             self.filter_by_age_check.grid_forget()
             self.filter_by_country_check.grid_forget()
+
+
+    def update_trees(self):
+        if self.male_profiles and self.female_profiles:
+            self.match.grid(column=0, row=1)
+            self.all_matches.grid(column=0, row=1)
+        else:
+            self.match.grid_forget()
+            self.all_matches.grid_forget()
+
 
     def get_user_profile(self, key):
         if key in self.female_profiles:
@@ -220,6 +241,7 @@ class Interface:
             return self.male_profiles[key]
         else:
             return None
+
 
     def get_potential_partners(self, key):
         if key in self.female_profiles:
@@ -258,6 +280,31 @@ class Interface:
             )
         map(set_field, ('Name','Country','Age'))
         self.match.grid(column=0, row=1)
+
+
+    def show_all_match(self, criteria):
+        def set_field(field):
+            map(lambda m: self.all_matches.set(m,
+                                         field,
+                                         self.get_user_profile(m)[field]
+                                         ),
+                users
+                )
+        for child in self.all_matches.get_children(''):
+            self.all_matches.delete(child)
+        map(lambda t: self.all_matches.heading(t, text=t),
+            self.all_matches['columns'])
+        if self.male_profiles and self.female_profiles:
+            matches = criteria.best_match(self.male_profiles,
+                                          self.female_profiles,
+                                          symmetric = True
+                                          )
+            users,scores = zip(*matches)
+            map(lambda p: self.all_matches.insert('', 'end', p, text=p),
+                users)
+            map(set_field, ('Name', 'Country', 'Gender', 'Age'))
+            self.all_matches.grid(column=0, row=1)
+
 
 rt = tk.Tk()
 gui = Interface(rt)

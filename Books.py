@@ -81,3 +81,7 @@ def matches(suitor, potential_partners):
 @matching.all_matches
 def all_matches(suitors, partners, symmetric=False):
     return matches(suitors, partners)
+
+@matching.best_match
+def best_match(suitors, partners, symmetric=False):
+    return all_matches(suitors, partners, symmetric)
