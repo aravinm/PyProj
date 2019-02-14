@@ -56,24 +56,18 @@ class Interface:
         self.choose_path_btn.grid(column=1, row=0)
 
         self.profile_page = ttk.Frame(self.notebook)
-        self.li = tk.Listbox(self.profile_page, height=15)
+        self.li = tk.Listbox(self.profile_page, height=12)
         self.li.bind("<<ListboxSelect>>", self.update_displayed_profile)
         self.displayed_profile = tk.Label(
             self.profile_page,
             textvariable = self.displayed_profile_text
             )
-        self.show_all_profile_btn=ttk.Button(
-            self.profile_page,
-            text='show all profiles',
-            command = self.show_all_profiles
-           )
         self.cur_user_btn=ttk.Button(
             self.profile_page,
             text = 'set current user',
             command = self.set_cur_user
             )
         self.cur_user_btn.grid(column=0, row=1)
-        self.show_all_profile_btn.grid(column=0, row=2)
         self.disable_if_empty()
 
         self.match_page = ttk.Frame(self.notebook)
@@ -81,6 +75,11 @@ class Interface:
             self.match_page,
             columns=('name', 'score')
         )
+        self.show_all_profile_btn=ttk.Button(
+            self.match_page,
+            text='show all profiles',
+            command = self.show_all_profiles
+           )
 
         self.notebook.grid(column=0, row=1)
         self.notebook.add(self.dir_page, text='folders')
@@ -96,10 +95,8 @@ class Interface:
     def disable_if_empty(self):
         if not self.li.get(0):
             self.li.grid_forget()
-            self.show_all_profile_btn.configure(state='disabled')
             self.cur_user_btn.configure(state='disabled')
         else:
-            self.show_all_profile_btn.configure(state='enabled')
             self.cur_user_btn.configure(state='enabled')
             self.li.grid(column=0, row=0)
 
@@ -118,26 +115,40 @@ class Interface:
 
 
     def show_all_profiles(self):
-        profiles =[self.cur_dir.get()+f for f in self.li.get(0, 'end')]
-        all_profiles_text=reader.read_all_from(profiles)
-
+        def set_fields(field, profiles_dict):
+            map(lambda m: profiles.set(m,
+                                       field,
+                                       profiles_dict[m][field]
+                                       ),
+                profiles_dict
+                )
         all_profile_window = tk.Toplevel()
-        all_profile_window.wm_title("all profiles")
-        all_profiles_textbox = tk.Text(all_profile_window)
-        all_profiles_textbox.insert(1.0, all_profiles_text)
-        all_profiles_textbox.configure(state='disabled')
-        all_profiles_textbox.pack()
-
+        all_profile_window.resizable(False,False)
+        profiles = ttk.Treeview(all_profile_window,
+                                columns=("Name", "Gender",'Age'),
+                                show="headings",
+                                )
+        map(lambda t: profiles.heading(t, text=t), profiles['columns'])
+        map(lambda p: profiles.insert('', 'end', p, text=p),
+            self.male_profiles
+            )
+        map(lambda p: profiles.insert('', 'end', p, text=p),
+            self.female_profiles
+            )
+        map(lambda s: set_fields(s, self.male_profiles), profiles['columns'])
+        map(lambda s: set_fields(s, self.female_profiles), profiles['columns'])
+        profiles.pack()
 
     def set_cur_dir(self):
         self.cur_dir.set(fd.askdirectory()+'/')
         self.update_file_list()
         self.displayed_profile_text.set('')
 
+
     def set_cur_user(self):
         self.cur_user.set(self.get_cur_selected_value())
         self.update_profiles()
-        self.show_match()
+        map(lambda c: self.show_match(c), (Books,LDcomp, overall))
 
 
     def update_file_list(self):
@@ -152,6 +163,10 @@ class Interface:
     def update_profiles(self):
         self.male_profiles, self.female_profiles =\
             reader.profiles_from(self.cur_dir.get())
+        if self.male_profiles and self.female_profiles:
+            self.show_all_profile_btn.grid(column=0, row=2, stick='se')
+        else:
+            self.show_all_profile_btn.grid_forget()
 
     def get_user_profile(self, key):
         if key in self.female_profiles:
@@ -170,28 +185,31 @@ class Interface:
             return None
 
 
-    def show_match(self):
-        if 'ld' in self.match.get_children(''):
-            self.match.delete('ld')
+    def show_match(self, criteria):
+        criteria_name = criteria.__name__
+        if criteria_name in self.match.get_children(''):
+            self.match.delete(criteria_name)
         map(lambda t: self.match.heading(t, text=t), self.match['columns'])
-        self.match.insert('', 'end', 'ld', text='likes / dislikes')
+        self.match.insert('', 'end', criteria_name, text=criteria_name)
         cur_user = self.get_user_profile(self.cur_user.get())
         potential_partners = self.get_potential_partners(self.cur_user.get())
-        ld_matches = LDcomp.matches(cur_user, potential_partners)
-        print ld_matches
-        map(lambda m: self.match.insert('ld', 'end', 'ld'.join(m), text=m),
-            ld_matches
+        matches = criteria.matches(cur_user, potential_partners)
+        map(lambda m: self.match.insert(criteria_name,
+                                        'end',
+                                        criteria_name.join(m),
+                                        text=m),
+            matches
             )
-        map(lambda m: self.match.set('ld'.join(m),
+        map(lambda m: self.match.set(criteria_name.join(m),
                                      'score',
-                                     ld_matches[m]),
-            ld_matches
+                                     matches[m]),
+            matches
             )
-        map(lambda m: self.match.set('ld'.join(m),
+        map(lambda m: self.match.set(criteria_name.join(m),
                                      'name',
                                      potential_partners[m]['Name']
                                     ),
-            ld_matches
+            matches
             )
         self.match.grid(column=0, row=1)
 
