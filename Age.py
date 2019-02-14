@@ -6,6 +6,7 @@ def match(suitor, partner, symmetric = True):
     if suitor['Age'] in partner['Acceptable_age_range'] and symmetric:
         score += 1
     if partner['Age'] in suitor['Acceptable_age_range']:
+        print partner['Age'] , suitor['Acceptable_age_range']
         score += 1
     return score
 

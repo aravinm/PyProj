@@ -18,6 +18,8 @@ class Interface:
         self.displayed_profile_text = tk.StringVar()
         self.filter_by_country = tk.BooleanVar()
         self.filter_by_country.set(True)
+        self.filter_by_age = tk.BooleanVar()
+        self.filter_by_age.set(True)
         self.male_profiles,self.female_profiles = None, None
 
         self.style = ttk.Style()
@@ -87,6 +89,11 @@ class Interface:
             text="filter by country",
             variable=self.filter_by_country,
             command=self.update_matches)
+        self.filter_by_age_check = tk.Checkbutton(
+            self.match_page,
+            text="filter by age",
+            variable=self.filter_by_age,
+            command=self.update_matches)
 
 
         self.notebook.grid(column=0, row=1)
@@ -154,11 +161,11 @@ class Interface:
 
 
     @staticmethod
-    def filter_profiles(condition,cur_user, potential_partners):
+    def filter_profiles(condition, criteria,cur_user, potential_partners):
         if condition.get():
             return {
                 k:v for (k,v) in potential_partners.iteritems()
-                if Countries.match(cur_user,
+                if criteria.match(cur_user,
                                    potential_partners[k],
                                    symmetric=False)>0
                 }
@@ -169,7 +176,10 @@ class Interface:
     def update_matches(self):
         user = self.get_user_profile(self.cur_user.get())
         partners = self.get_potential_partners(self.cur_user.get())
-        partners = self.filter_profiles(self.filter_by_country, user, partners)
+        partners = self.filter_profiles(self.filter_by_country,
+                                        Countries, user, partners
+                                        )
+        partners = self.filter_profiles(self.filter_by_age, Age, user, partners)
         map(lambda c: self.show_match(user, partners, c),
             (Books, Likes, Overall)
             )
@@ -194,9 +204,13 @@ class Interface:
             reader.profiles_from(self.cur_dir.get())
         if self.male_profiles and self.female_profiles:
             self.show_all_profile_btn.grid(column=0, row=2, stick='se')
+            self.filter_by_age_check.grid(column=0, row=3, stick='sw')
             self.filter_by_country_check.grid(column=0, row=2, stick='sw')
+
+
         else:
             self.show_all_profile_btn.grid_forget()
+            self.filter_by_age_check.grid_forget()
             self.filter_by_country_check.grid_forget()
 
     def get_user_profile(self, key):
