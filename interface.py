@@ -16,6 +16,7 @@ class Interface:
         self.cur_dir = tk.StringVar()
         self.cur_user = tk.StringVar()
         self.displayed_profile_text = tk.StringVar()
+        self.filter_by_country = True
         self.male_profiles,self.female_profiles = None, None
 
         self.style = ttk.Style()
@@ -145,10 +146,29 @@ class Interface:
         self.displayed_profile_text.set('')
 
 
+    @staticmethod
+    def filter_profiles(condition,cur_user, potential_partners):
+        if condition:
+            return {
+                k:v for (k,v) in potential_partners.iteritems()
+                if Countries.match(cur_user,
+                                   potential_partners[k],
+                                   symmetric=False)>0
+                }
+        else:
+            return potential_partners
+
+
+
     def set_cur_user(self):
         self.cur_user.set(self.get_cur_selected_value())
         self.update_profiles()
-        map(lambda c: self.show_match(c), (Books, Likes, Overall))
+        user = self.get_user_profile(self.cur_user.get())
+        partners = self.get_potential_partners(self.cur_user.get())
+        partners = self.filter_profiles(self.filter_by_country, user, partners)
+        map(lambda c: self.show_match(user, partners, c),
+            (Books, Likes, Overall, Age,Countries)
+            )
 
 
     def update_file_list(self):
@@ -185,14 +205,12 @@ class Interface:
             return None
 
 
-    def show_match(self, criteria):
+    def show_match(self, cur_user, potential_partners, criteria):
         criteria_name = criteria.__name__
         if criteria_name in self.match.get_children(''):
             self.match.delete(criteria_name)
         map(lambda t: self.match.heading(t, text=t), self.match['columns'])
         self.match.insert('', 'end', criteria_name, text=criteria_name)
-        cur_user = self.get_user_profile(self.cur_user.get())
-        potential_partners = self.get_potential_partners(self.cur_user.get())
         matches = criteria.matches(cur_user, potential_partners)
         map(lambda m: self.match.insert(criteria_name,
                                         'end',
@@ -212,7 +230,6 @@ class Interface:
             matches
             )
         self.match.grid(column=0, row=1)
-
 
 rt = tk.Tk()
 gui = Interface(rt)
