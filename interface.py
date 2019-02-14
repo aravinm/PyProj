@@ -62,11 +62,15 @@ class Interface:
         self.choose_path_btn.grid(column=1, row=0)
 
         self.profile_page = ttk.Frame(self.notebook)
-        self.li = tk.Listbox(self.profile_page, height=12)
+        self.li = tk.Listbox(self.profile_page, height=16)
         self.li.bind("<<ListboxSelect>>", self.update_displayed_profile)
         self.displayed_profile = tk.Label(
             self.profile_page,
-            textvariable = self.displayed_profile_text
+            textvariable = self.displayed_profile_text,
+            height = 17,
+            width = 50,
+            anchor='nw',
+            justify='left'
             )
         self.cur_user_btn=ttk.Button(
             self.profile_page,
@@ -300,9 +304,9 @@ class Interface:
 
     def show_match(self, cur_user, potential_partners, criteria):
         def set_field(field):
-            map(lambda m: self.match.set(criteria_name.join(m),
+            map(lambda m: self.match.set(''.join((criteria_name,m[0])),
                                          field,
-                                         potential_partners[m][field]
+                                         potential_partners[m[0]][field]
                                          ),
                 matches
                 )
@@ -310,17 +314,20 @@ class Interface:
         if criteria_name in self.match.get_children(''):
             self.match.delete(criteria_name)
         map(lambda t: self.match.heading(t, text=t), self.match['columns'])
-        self.match.insert('', 'end', criteria_name, text=criteria_name)
-        matches = criteria.matches(cur_user, potential_partners)
+        self.match.insert('', 'end',criteria_name,
+                          text=criteria_name, open=True
+                          )
+        matches = criteria.matches(cur_user, potential_partners).most_common()
         map(lambda m: self.match.insert(criteria_name,
                                         'end',
-                                        criteria_name.join(m),
-                                        text=m),
+                                        ''.join((criteria_name,m[0])),
+                                        text=m[0],
+                                        ),
             matches
             )
-        map(lambda m: self.match.set(criteria_name.join(m),
+        map(lambda m: self.match.set(''.join((criteria_name,m[0])),
                                      'Score',
-                                     matches[m]),
+                                     m[1]),
             matches
             )
         map(set_field, ('Name','Country','Age'))
