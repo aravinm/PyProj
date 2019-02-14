@@ -15,6 +15,7 @@ class Interface:
 
         self.cur_dir = tk.StringVar()
         self.cur_user = tk.StringVar()
+        self.cur_usr_name = tk.StringVar()
         self.displayed_profile_text = tk.StringVar()
         self.filter_by_country = tk.BooleanVar()
         self.filter_by_country.set(True)
@@ -37,7 +38,7 @@ class Interface:
         )
         self.cur_user_value = tk.Label(
             self.cur_user_label,
-            textvariable=self.cur_user
+            textvariable=self.cur_usr_name
         )
         self.cur_user_label.grid(column=0, row=0, sticky='w')
         self.cur_user_value.grid(column=0, row=0)
@@ -120,11 +121,6 @@ class Interface:
                                         ,text = 'export matches to csv'
                                         ,command=self.all_best_match_to_csv
                                         )
-        self.best_match_label.grid(column=0, row=2, sticky='sw')
-        self.likes_radio_btn.grid(column=0,row=3, sticky='sw')
-        self.books_radio_btn.grid(column=0,row=4, sticky='sw')
-        self.overall_radio_btn.grid(column=0,row=5, sticky='sw')
-        self.csv_export_btn.grid(column=1,row=6, sticky='ne')
 
         self.notebook.grid(column=0, row=1)
         self.notebook.add(self.dir_page, text='folders')
@@ -222,11 +218,23 @@ class Interface:
 
     def update_all_matches(self):
         self.show_all_match(globals()[self.criteria.get()])
-
+        if self.male_profiles and self.female_profiles:
+            self.best_match_label.grid(column=0, row=2, sticky='sw')
+            self.likes_radio_btn.grid(column=0, row=3, sticky='sw')
+            self.books_radio_btn.grid(column=0, row=4, sticky='sw')
+            self.overall_radio_btn.grid(column=0, row=5, sticky='sw')
+            self.csv_export_btn.grid(column=1, row=6, sticky='ne')
+        else:
+            self.best_match_label.grid_forget()
+            self.likes_radio_btn.grid_forget()
+            self.books_radio_btn.grid_forget()
+            self.overall_radio_btn.grid_forget()
+            self.csv_export_btn.grid_forget()
 
     def set_cur_user(self):
-        usr_name = self.get_profile_name(self.get_cur_selected_value())
-        self.cur_user.set(usr_name)
+        usr = self.get_cur_selected_value()
+        self.cur_user.set(usr)
+        self.cur_usr_name.set(self.get_profile_name(usr))
         self.update_profile_page()
         self.update_matches()
 
