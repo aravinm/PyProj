@@ -1,5 +1,5 @@
 import os
-import Age,Books,Countries,LDcomp,overall
+import Age,Books,Countries,Likes,Overall
 from reader import profile
 from folderpathinput import folder_input
 

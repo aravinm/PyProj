@@ -1,8 +1,8 @@
-import Age,Books,Countries,LDcomp
+import Age,Books,Countries,Likes
 import matching
 
 
-def match(suitor, partner, criteria=(Age,Books,Countries,LDcomp)):
+def match(suitor, partner, criteria=(Age, Books, Countries, Likes)):
     score = 1
     for criterion in criteria:
         # Calculate final score. Country score x Age score x Shared Interest Score x likes & dislikes.

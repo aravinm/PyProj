@@ -5,7 +5,7 @@ import tkFileDialog as fd
 import os
 
 import reader
-import Age,Books,Countries,LDcomp,overall
+import Age,Books,Countries,Likes,Overall
 from utils import ignored
 
 
@@ -148,7 +148,7 @@ class Interface:
     def set_cur_user(self):
         self.cur_user.set(self.get_cur_selected_value())
         self.update_profiles()
-        map(lambda c: self.show_match(c), (Books,LDcomp, overall))
+        map(lambda c: self.show_match(c), (Books, Likes, Overall))
 
 
     def update_file_list(self):
