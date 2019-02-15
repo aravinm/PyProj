@@ -2,8 +2,6 @@ from collections import Counter
 import re
 import matching
 
-# todo import nltk word stemming?
-
 """
 extracts meaningful words from the list of books then then count the frequency
 """
