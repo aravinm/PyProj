@@ -52,8 +52,8 @@ def sanitised(sentence):
     sentence = re.sub('[^a-z ]', '', sentence)
     # remove not alphabetic characters
     sentence = sentence.strip().split()
-    sentence = word_stems(sentence)
     sentence = stop_words_removed(sentence)
+    sentence = word_stems(sentence)
     return sentence
 
 
