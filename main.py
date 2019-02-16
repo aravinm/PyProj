@@ -173,10 +173,6 @@ class Interface:
             textvariable=self.books_str
         ).grid()
         self.profile_str = tk.StringVar()
-        self.display_new_profile = tk.Label(
-            self.new_prof_page,
-            textvariable=self.profile_str
-        )
         tk.Label(self.new_prof_page, text="Name").grid(row=1)
         tk.Label(self.new_prof_page, text="Gender").grid(row=2)
         tk.Label(self.new_prof_page, text="Country").grid(row=3)
@@ -240,6 +236,11 @@ class Interface:
                                     text="Verify Profile",
                                     command=self.confirm
                                     )
+        self.reset_btn=tk.Button(self.new_prof_page,
+                                    text="reset form",
+                                    command=self.clear_new_profile_form
+                                 )
+
         self.name_entry.grid(row=1, column=1, columnspan=2)
         self.r_male.grid(row=2, column=1)
         self.r_female.grid(row=2, column=2)
@@ -255,19 +256,12 @@ class Interface:
         self.add_like_btn.grid(row=7, column=3)
         self.add_dislike_btn.grid(row=8, column=3)
         self.add_book_btn.grid(row=9, column=3)
-        self.verify_btn.grid(row=10, column=3)
+        self.reset_btn.grid(row=10, column=0)
+        self.verify_btn.grid(row=10, column=1)
         self.displayed_acceptable_country_frame.grid(row=1, column=4)
         self.displayed_likes_frame.grid(row=3, column=4)
         self.displayed_dislikes_frame.grid(row=5, column=4)
         self.displayed_books_frame.grid(row=7, column=4)
-        self.confirm_btn = tk.Button(self.new_prof_page,
-                                     text="Confirm",
-                                     command=self.write_new_profile
-                                     )
-        self.cancel_btn = tk.Button(self.new_prof_page,
-                                    text="Cancel",
-                                    command=self.clear_new_profile_form
-                                    )
 
         self.notebook.grid(column=0, row=1)
         self.notebook.add(self.dir_page, text='folders')
@@ -334,7 +328,8 @@ class Interface:
         self.displayed_profile_text.set('')
         self.update_profiles()
         self.update_profile_page()
-        self.update_best_match_page()
+        self.cur_usr_name.set(None)
+        self.update_matches_page()
         self.update_all_matches()
 
 
@@ -385,6 +380,7 @@ class Interface:
         if not self.cur_usr_name.get() == 'None':
             self.update_profile_page()
             self.update_matches()
+            self.update_matches_page()
         else:
             self.error_msg("please select a valid user")
 
@@ -411,20 +407,14 @@ class Interface:
 
 
     def update_matches_page(self):
-        if self.cur_usr_name:
-            self.match.grid(column=0, row=1)
-            self.filter_by_age_check.grid(column=0, row=3, stick='sw')
-            self.filter_by_country_check.grid(column=0, row=2, stick='sw')
-        else:
+        if self.cur_usr_name.get() == 'None':
             self.match.grid_forget()
             self.filter_by_age_check.grid_forget()
             self.filter_by_country_check.grid_forget()
-
-    def update_best_match_page(self):
-        if self.male_profiles and self.female_profiles:
-            self.all_matches.grid(column=0, row=1)
         else:
-            self.all_matches.grid_forget()
+            self.match.grid(column=0, row=1)
+            self.filter_by_age_check.grid(column=0, row=3, stick='sw')
+            self.filter_by_country_check.grid(column=0, row=2, stick='sw')
 
 
     def get_user_profile(self, key):
@@ -562,7 +552,11 @@ class Interface:
         self.books_entry.delete(0, 'end')
 
     def confirm(self):
-        self.verify_btn.grid_forget()
+        def cancel():
+            verify_frame.destroy()
+        def write():
+            self.write_new_profile()
+            cancel()
         new_profile_text=dedent(
             """\
             Name: {}
@@ -587,11 +581,22 @@ class Interface:
             self.likes_str.get(),
             self.dislikes_str.get(),
             self.books_str.get())
-
         self.profile_str.set(new_profile_text)
-        self.display_new_profile.grid(row=10, columnspan=3)
-        self.confirm_btn.grid(row=11, column=0)
-        self.cancel_btn.grid(row=11, column=1)
+        self.clear_new_profile_form
+        verify_frame = tk.Toplevel()
+        verify_frame.resizable(False, False)
+        verify_frame.grid()
+        tk.Label(verify_frame,text=new_profile_text).pack()
+        confirm_btn = tk.Button(verify_frame,
+                                     text="Confirm",
+                                     command=write
+                                     )
+        cancel_btn = tk.Button(verify_frame,
+                                    text="Cancel",
+                                    command=cancel
+                                    )
+        confirm_btn.pack()
+        cancel_btn.pack()
 
     def write_new_profile(self):
         file_name = fd.asksaveasfilename(defaultextension=".txt",
@@ -599,8 +604,6 @@ class Interface:
         if file_name:
             with open(file_name,"w+") as f:
                 f.write(self.profile_str.get())
-        self.clear_new_profile_form()
-        self.verify_btn.grid(row=10, column=3)
 
     def clear_new_profile_form(self):
         self.name_entry.delete(0, 'end')
@@ -609,13 +612,14 @@ class Interface:
         self.likes_entry.delete(0, 'end')
         self.dislikes_entry.delete(0, 'end')
         self.books_entry.delete(0, 'end')
-        self.cancel_btn.grid_forget()
-        self.confirm_btn.grid_forget()
-        self.display_new_profile.grid_forget()
-        self.verify_btn.grid(row=10, column=3)
+        self.acceptable_country_str.set('')
+        self.likes_str.set('')
+        self.dislikes_str.set('')
+        self.books_str.set('')
 
 
-    def error_msg(self, msg):
+    @staticmethod
+    def error_msg( msg):
         error_frame = tk.Toplevel()
         error_frame.resizable(False, False)
         tk.Label(error_frame,fg="red",text=msg).pack()
