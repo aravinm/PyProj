@@ -499,9 +499,9 @@ class Interface:
         self.match.insert('', 'end',criteria_name,
                           text=criteria_name, open=True
                           )
-        matches = criteria.matches(cur_user,potential_partners)
-        self.no_of_matches=len(matches)
-        matches=matches.most_common(int(self.show_top_n.get()))
+        matches = criteria.matches(cur_user,
+                                   potential_partners
+                                   ).most_common(int(self.show_top_n.get()))
         map(lambda m: self.match.insert(criteria_name,
                                         'end',
                                         ''.join((criteria_name,m[0])),
