@@ -151,12 +151,9 @@ class Interface:
         self.likes_str = tk.StringVar()
         self.dislikes_str = tk.StringVar()
         self.books_str = tk.StringVar()
-        self.defaultage = tk.IntVar()
-        self.defaultminage = tk.IntVar()
-        self.defaultmaxage = tk.IntVar()
-        self.defaultage.set("16")
-        self.defaultminage.set("16")
-        self.defaultmaxage.set("16")
+        self.defaultage = tk.IntVar(value=16)
+        self.defaultminage = tk.IntVar(value=16)
+        self.defaultmaxage = tk.IntVar(value=16)
         self.displayed_acceptable_country_frame =  ttk.LabelFrame(
             self.new_prof_page,
             text="Acceptable Countries:"
@@ -190,15 +187,24 @@ class Interface:
             textvariable=self.books_str
         ).grid()
         self.profile_str = tk.StringVar()
-        tk.Label(self.new_prof_page, text="Name").grid(row=1)
-        tk.Label(self.new_prof_page, text="Gender").grid(row=2)
-        tk.Label(self.new_prof_page, text="Country").grid(row=3)
-        tk.Label(self.new_prof_page, text="Acceptable Country").grid(row=4)
-        tk.Label(self.new_prof_page, text="Age").grid(row=5)
-        tk.Label(self.new_prof_page, text="Acceptable Age Range").grid(row=6)
-        tk.Label(self.new_prof_page, text="Likes").grid(row=7)
-        tk.Label(self.new_prof_page, text="Dislikes").grid(row=8)
-        tk.Label(self.new_prof_page, text="Books").grid(row=9)
+        tk.Label(self.new_prof_page, text="Name"
+                 ).grid(row=1, sticky='w')
+        tk.Label(self.new_prof_page, text="Gender"
+                 ).grid(row=2, sticky='w',pady=10)
+        tk.Label(self.new_prof_page, text="Country"
+                 ).grid(row=3, sticky='w',pady=10)
+        tk.Label(self.new_prof_page, text="Acceptable Country"
+                 ).grid(row=4, sticky='w')
+        tk.Label(self.new_prof_page, text="Age"
+                 ).grid(row=5, sticky='w')
+        tk.Label(self.new_prof_page, text="Acceptable Age Range"
+                 ).grid(row=6, sticky='w',pady=15)
+        tk.Label(self.new_prof_page, text="Likes"
+                 ).grid(row=7, sticky='w')
+        tk.Label(self.new_prof_page, text="Dislikes"
+                 ).grid(row=8, sticky='w')
+        tk.Label(self.new_prof_page, text="Books"
+                 ).grid(row=9, sticky='w')
         self.name_entry = tk.Entry(self.new_prof_page,
                                    width=31,
                                    textvariable=self.name
@@ -270,27 +276,28 @@ class Interface:
                                     command=self.clear_new_profile_form
                                  )
 
-        self.name_entry.grid(row=1, column=1, columnspan=2)
+        self.name_entry.grid(row=1, column=1, columnspan=3)
         self.r_male.grid(row=2, column=1)
         self.r_female.grid(row=2, column=2)
-        self.country_entry.grid(row=3, column=1, columnspan=2)
-        self.acceptable_country_entry.grid(row=4, column=1, columnspan=2)
-        self.age.grid(row=5, column=1, columnspan=2)
+        self.country_entry.grid(row=3, column=1, columnspan=3)
+        self.acceptable_country_entry.grid(row=4, column=1, columnspan=3)
+        self.age.grid(row=5, column=1)
         self.min_age.grid(row=6, column=1)
-        self.max_age.grid(row=6, column=2)
-        self.likes_entry.grid(row=7, column=1, columnspan=2)
-        self.dislikes_entry.grid(row=8, column=1, columnspan=2)
-        self.books_entry.grid(row=9, column=1, columnspan=2)
-        self.add_country_btn.grid(row=4, column=3)
-        self.add_like_btn.grid(row=7, column=3)
-        self.add_dislike_btn.grid(row=8, column=3)
-        self.add_book_btn.grid(row=9, column=3)
+        tk.Label(self.new_prof_page, text='to').grid(row=6,column=2)
+        self.max_age.grid(row=6, column=3)
+        self.likes_entry.grid(row=7, column=1, columnspan=3)
+        self.dislikes_entry.grid(row=8, column=1, columnspan=3)
+        self.books_entry.grid(row=9, column=1, columnspan=3)
+        self.add_country_btn.grid(row=4, column=4, padx=10, sticky='w')
+        self.add_like_btn.grid(row=7, column=4, padx=10, sticky='w')
+        self.add_dislike_btn.grid(row=8, column=4, padx=10, sticky='w')
+        self.add_book_btn.grid(row=9, column=4, padx=10, sticky='w')
         self.reset_btn.grid(row=10, column=0)
         self.verify_btn.grid(row=10, column=1)
-        self.displayed_acceptable_country_frame.grid(row=1, column=4)
-        self.displayed_likes_frame.grid(row=3, column=4)
-        self.displayed_dislikes_frame.grid(row=5, column=4)
-        self.displayed_books_frame.grid(row=7, column=4)
+        self.displayed_acceptable_country_frame.grid(row=4, column=5)
+        self.displayed_likes_frame.grid(row=7, column=5)
+        self.displayed_dislikes_frame.grid(row=8, column=5)
+        self.displayed_books_frame.grid(row=9, column=5)
 
         self.notebook.grid(column=0, row=1)
         self.notebook.add(self.dir_page, text='folders')
@@ -622,7 +629,7 @@ class Interface:
         verify_frame = tk.Toplevel()
         verify_frame.resizable(False, False)
         verify_frame.grid()
-        tk.Label(verify_frame,text=new_profile_text).pack()
+        tk.Label(verify_frame,text=new_profile_text,justify='left').pack()
         confirm_btn = tk.Button(verify_frame,
                                      text="Confirm",
                                      command=write
