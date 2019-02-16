@@ -529,15 +529,10 @@ class Interface:
         self.cancel.grid(row=10, column=4)
 
     def confirmprof(self):
-        filename = ""
-        filenamewin = tk.Toplevel(self.newprof_page)
-        filenamewin.geometry('175x100')
-        filenamewin.title("Filename")
-        filen = tk.Label(filenamewin, text="Please Enter the Filename").grid()
-        filenam = tk.Entry(filenamewin, textvariable=filename)
-        confirm = tk.Button(self.newprof_page, text="Create File", command=self.createfile)
-        filenam.grid()
-        confirm.grid()
+        file_name = fd.asksaveasfilename(defaultextension=".txt",
+            filetypes=(("text files","*.txt"),("all files","*.*")))
+        with open(file_name,"w+") as f:
+            f.write(self.profilestr.get())
 
     def cancel(self):
         self.e1.delete(0, 'end')
@@ -556,12 +551,6 @@ class Interface:
         verify = tk.Button(self.newprof_page, text="Verify Profile", command=self.confirm)
         verify.grid(row=10, column=3)
 
-    def createfile(self):
-        self.cur_dir.set(fd.askdirectory() + '/')
-        f = open(self.cur_dir.get()+".txt","w+")
-        f.write(self.profilestr.get())
-        f.close()
-        self.cancel
 
 rt = tk.Tk()
 gui = Interface(rt)
