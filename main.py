@@ -126,12 +126,109 @@ class Interface:
                                         ,command=self.all_best_match_to_csv
                                         )
 
+        self.newprof_page = ttk.Frame(self.notebook)
+        self.stringlist = []
+        self.name = tk.StringVar()
+        self.gender = tk.StringVar()
+        self.country = tk.StringVar()
+        self.acceptablecountry = tk.StringVar()
+        self.likes = tk.StringVar()
+        self.dislikes = tk.StringVar()
+        self.book = tk.StringVar()
+        self.namestr = tk.StringVar()
+        self.genderstr = tk.StringVar()
+        self.countrystr = tk.StringVar()
+        self.acceptablecountrystr = tk.StringVar()
+        self.agestr = tk.StringVar()
+        self.agerangestr = tk.StringVar()
+        self.likestr = tk.StringVar()
+        self.dislikestr = tk.StringVar()
+        self.bookstr = tk.StringVar()
+        self.namestr.set("Name: ")
+        self.genderstr.set("Gender: ")
+        self.countrystr.set("Country: ")
+        self.acceptablecountrystr.set("Acceptable_country: ")
+        self.agestr.set("Age: ")
+        self.agerangestr.set("Acceptable_age_range: ")
+        self.likestr.set("Likes: ")
+        self.dislikestr.set("Dislikes: ")
+        self.bookstr.set("Books:" + "\n")
+        self.displayed_acceptablecountry = tk.Label(
+            self.newprof_page,
+            textvariable=self.acceptablecountrystr
+        )
+        self.displayed_likes = tk.Label(
+            self.newprof_page,
+            textvariable=self.likestr
+        )
+        self.displayed_dislikes = tk.Label(
+            self.newprof_page,
+            textvariable=self.dislikestr
+        )
+        self.displayed_books = tk.Label(
+            self.newprof_page,
+            textvariable=self.bookstr
+        )
+        self.profilestr = tk.StringVar()
+        for x in self.stringlist:
+            self.profilestr.set(self.profilestr.get() + str(x) + "\n")
+        self.display_new_profile = tk.Label(
+            self.newprof_page,
+            textvariable=self.profilestr
+        )
+        self.tk = tk.Label(self.newprof_page, text="Name").grid(row=1)
+        self.tk = tk.Label(self.newprof_page, text="Gender").grid(row=2)
+        self.tk = tk.Label(self.newprof_page, text="Country").grid(row=3)
+        self.tk = tk.Label(self.newprof_page, text="Acceptable Country").grid(row=4)
+        self.tk = tk.Label(self.newprof_page, text="Age").grid(row=5)
+        self.tk = tk.Label(self.newprof_page, text="Acceptable Age Range").grid(row=6)
+        self.tk = tk.Label(self.newprof_page, text="Likes").grid(row=7)
+        self.tk = tk.Label(self.newprof_page, text="Dislikes").grid(row=8)
+        self.tk = tk.Label(self.newprof_page, text="Books").grid(row=9)
+        self.e1 = tk.Entry(self.newprof_page, width=31, textvariable=self.name)
+        self.rmale = tk.Radiobutton(self.newprof_page, text="Male", variable=self.gender, value="Male")
+        self.rfemale = tk.Radiobutton(self.newprof_page, text="Female", variable=self.gender, value="Female")
+        self.e3 = tk.Entry(self.newprof_page, width=31, textvariable=self.country)
+        self.e4 = tk.Entry(self.newprof_page, width=31, textvariable=self.acceptablecountry)
+        self.age = tk.Spinbox(self.newprof_page, from_=16, to=100, width=2)
+        self.minage = tk.Spinbox(self.newprof_page, from_=16, to=100, width=2)
+        self.maxage = tk.Spinbox(self.newprof_page, from_=16, to=100, width=2)
+        self.e7 = tk.Entry(self.newprof_page, width=31, textvariable=self.likes)
+        self.e8 = tk.Entry(self.newprof_page, width=31, textvariable=self.dislikes)
+        self.e9 = tk.Entry(self.newprof_page, width=31, textvariable=self.book)
+        self.b1 = tk.Button(self.newprof_page, text="Add Acceptable Country", command=self.addacceptablecountry)
+        self.b2 = tk.Button(self.newprof_page, text="Add A Like", command=self.addlikes)
+        self.b3 = tk.Button(self.newprof_page, text="Add A Dislike", command=self.adddislikes)
+        self.b4 = tk.Button(self.newprof_page, text="Add A Book", command=self.addbook)
+        self.b5 = tk.Button(self.newprof_page, text="Verify Profile", command=self.confirm)
+        self.e1.grid(row=1, column=1, columnspan=2)
+        self.rmale.grid(row=2, column=1)
+        self.rfemale.grid(row=2, column=2)
+        self.e3.grid(row=3, column=1, columnspan=2)
+        self.e4.grid(row=4, column=1, columnspan=2)
+        self.age.grid(row=5, column=1, columnspan=2)
+        self.minage.grid(row=6, column=1)
+        self.maxage.grid(row=6, column=2)
+        self.e7.grid(row=7, column=1, columnspan=2)
+        self.e8.grid(row=8, column=1, columnspan=2)
+        self.e9.grid(row=9, column=1, columnspan=2)
+        self.b1.grid(row=4, column=3)
+        self.b2.grid(row=7, column=3)
+        self.b3.grid(row=8, column=3)
+        self.b4.grid(row=9, column=3)
+        self.b5.grid(row=10, column=3)
+        self.displayed_acceptablecountry.grid(row=1, column=4)
+        self.displayed_likes.grid(row=3, column=4)
+        self.displayed_dislikes.grid(row=5, column=4)
+        self.displayed_books.grid(row=7, column=4)
+        self.display_new_profile.grid(row=10, columnspan=3)
+
         self.notebook.grid(column=0, row=1)
         self.notebook.add(self.dir_page, text='folders')
         self.notebook.add(self.profile_page, text='profiles')
         self.notebook.add(self.match_page, text='matches')
         self.notebook.add(self.all_matches_page, text='best match')
-
+        self.notebook.add(self.newprof_page, text='Create Profile')
 
     def get_cur_selected_value(self):
         with ignored(tk.TclError):
@@ -389,6 +486,82 @@ class Interface:
         map(lambda d: self.criteria_best_match_to_csv(d, file_name=file_name),
             (Overall,Books,Likes)
             )
+
+    def addacceptablecountry(self):
+        self.acceptablecountrystr.set(self.acceptablecountrystr.get() + self.acceptablecountry.get()+",")
+        self.e4.delete(0, 'end')
+
+    def addlikes(self):
+        self.likestr.set(self.likestr.get()+self.likes.get()+",")
+        self.e7.delete(0, 'end')
+
+    def adddislikes(self):
+        self.dislikestr.set(self.dislikestr.get() + self.dislikes.get() + ",")
+        self.e8.delete(0, 'end')
+
+    def addbook(self):
+        self.bookstr.set(self.bookstr.get()+self.book.get()+"\n")
+        self.e9.delete(0, 'end')
+
+    def confirm(self):
+        self.namestr.set(self.namestr.get() + self.name.get())
+        self.genderstr.set(self.genderstr.get()+self.gender.get())
+        self.countrystr.set(self.countrystr.get()+self.country.get())
+        self.agestr.set(self.agestr.get()+str(self.age.get()))
+        self.agerangestr.set(self.agerangestr.get()+str(self.minage.get())+"-"+str(self.maxage.get()))
+        bookstrr = tk.StringVar()
+        bookstrr.set("\n"+str(self.bookstr.get()))
+        self.stringlist.append(self.namestr.get())
+        self.stringlist.append(self.genderstr.get())
+        self.stringlist.append(self.countrystr.get())
+        self.stringlist.append(self.acceptablecountrystr.get())
+        self.stringlist.append(self.agestr.get())
+        self.stringlist.append(self.agerangestr.get())
+        self.stringlist.append(self.likestr.get())
+        self.stringlist.append(self.dislikestr.get())
+        self.stringlist.append(bookstrr.get())
+        for x in self.stringlist:
+            self.profilestr.set(self.profilestr.get() + str(x) + "\n")
+        self.b5.destroy()
+        self.confirm = tk.Button(self.newprof_page, text="Confirm", command=self.confirmprof)
+        self.cancel = tk.Button(self.newprof_page, text="Cancel", command=self.cancel)
+        self.confirm.grid(row=10, column=3)
+        self.cancel.grid(row=10, column=4)
+
+    def confirmprof(self):
+        filename = ""
+        filenamewin = tk.Toplevel(self.newprof_page)
+        filenamewin.geometry('175x100')
+        filenamewin.title("Filename")
+        filen = tk.Label(filenamewin, text="Please Enter the Filename").grid()
+        filenam = tk.Entry(filenamewin, textvariable=filename)
+        confirm = tk.Button(self.newprof_page, text="Create File", command=self.createfile)
+        filenam.grid()
+        confirm.grid()
+
+    def cancel(self):
+        self.e1.delete(0, 'end')
+        self.e3.delete(0, 'end')
+        self.e4.delete(0, 'end')
+        self.e7.delete(0, 'end')
+        self.e8.delete(0, 'end')
+        self.e9.delete(0, 'end')
+        self.acceptablecountrystr.set("Acceptable_country: ")
+        self.likestr.set("Likes: ")
+        self.dislikestr.set("Dislikes: ")
+        self.bookstr.set("Books:"+"\n")
+        self.profilestr.set("")
+        self.cancel.destroy()
+        self.confirm.destroy()
+        verify = tk.Button(self.newprof_page, text="Verify Profile", command=self.confirm)
+        verify.grid(row=10, column=3)
+
+    def createfile(self):
+        self.cur_dir.set(fd.askdirectory() + '/')
+        f = open(self.cur_dir.get()+".txt","w+")
+        f.write(self.profilestr.get())
+        f.close()
+        self.cancel
 
 rt = tk.Tk()
 gui = Interface(rt)
