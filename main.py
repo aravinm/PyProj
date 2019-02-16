@@ -140,8 +140,6 @@ class Interface:
         self.likes_str = tk.StringVar()
         self.dislikes_str = tk.StringVar()
         self.books_str = tk.StringVar()
-        self.defaultage = tk.StringVar()
-        self.defaultage.set("16")
         self.displayed_acceptable_country_frame =  ttk.LabelFrame(
             self.new_prof_page,
             text="Acceptable Countries:"
@@ -204,9 +202,9 @@ class Interface:
                                                  width=31,
                                         textvariable=self.acceptable_country
                                                  )
-        self.age = tk.Spinbox(self.new_prof_page, from_=16, to=100, width=2, textvariable=self.defaultage)
-        self.min_age = tk.Spinbox(self.new_prof_page, from_=16, to=100, width=2, textvariable=self.defaultage)
-        self.max_age = tk.Spinbox(self.new_prof_page, from_=16, to=100, width=2, textvariable=self.defaultage)
+        self.age = tk.Spinbox(self.new_prof_page, from_=16, to=100, width=2)
+        self.min_age = tk.Spinbox(self.new_prof_page, from_=16, to=100, width=2)
+        self.max_age = tk.Spinbox(self.new_prof_page, from_=16, to=100, width=2)
         self.likes_entry = tk.Entry(self.new_prof_page,
                                     width=31,
                                     textvariable=self.likes)
@@ -238,8 +236,7 @@ class Interface:
                                     text="Verify Profile",
                                     command=self.confirm
                                     )
-        self.
-        _btn=tk.Button(self.new_prof_page,
+        self.reset_btn=tk.Button(self.new_prof_page,
                                     text="reset form",
                                     command=self.clear_new_profile_form
                                  )
@@ -619,7 +616,6 @@ class Interface:
         self.likes_str.set('')
         self.dislikes_str.set('')
         self.books_str.set('')
-        self.defaultage.set('16')
 
 
     @staticmethod
