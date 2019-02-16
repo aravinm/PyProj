@@ -17,6 +17,7 @@ class Interface:
         self.cur_dir = tk.StringVar()
         self.cur_user = tk.StringVar()
         self.cur_usr_name = tk.StringVar()
+        self.cur_usr_name.set(None)
         self.displayed_profile_text = tk.StringVar()
         self.filter_by_country = tk.BooleanVar(value=True)
         self.filter_by_age = tk.BooleanVar(value=True)
@@ -194,20 +195,51 @@ class Interface:
                                      variable=self.gender,
                                      value="Male"
                                      )
-        self.r_female = tk.Radiobutton(self.new_prof_page, text="Female", variable=self.gender, value="Female")
-        self.country_entry = tk.Entry(self.new_prof_page, width=31, textvariable=self.country)
-        self.acceptable_country_entry = tk.Entry(self.new_prof_page, width=31, textvariable=self.acceptable_country)
+        self.r_female = tk.Radiobutton(self.new_prof_page,
+                                       text="Female",
+                                       variable=self.gender,
+                                       value="Female")
+        self.country_entry = tk.Entry(self.new_prof_page,
+                                      width=31,
+                                      textvariable=self.country)
+        self.acceptable_country_entry = tk.Entry(self.new_prof_page,
+                                                 width=31,
+                                        textvariable=self.acceptable_country
+                                                 )
         self.age = tk.Spinbox(self.new_prof_page, from_=16, to=100, width=2)
         self.min_age = tk.Spinbox(self.new_prof_page, from_=16, to=100, width=2)
         self.max_age = tk.Spinbox(self.new_prof_page, from_=16, to=100, width=2)
-        self.likes_entry = tk.Entry(self.new_prof_page, width=31, textvariable=self.likes)
-        self.dislikes_entry = tk.Entry(self.new_prof_page, width=31, textvariable=self.dislikes)
-        self.books_entry = tk.Entry(self.new_prof_page, width=31, textvariable=self.book)
-        self.add_country_btn = tk.Button(self.new_prof_page, text="Add Acceptable Country", command=self.addacceptablecountry)
-        self.add_like_btn = tk.Button(self.new_prof_page, text="Add A Like", command=self.addlikes)
-        self.add_dislike_btn = tk.Button(self.new_prof_page, text="Add A Dislike", command=self.adddislikes)
-        self.add_book_btn = tk.Button(self.new_prof_page, text="Add A Book", command=self.addbook)
-        self.verify_btn = tk.Button(self.new_prof_page, text="Verify Profile", command=self.confirm)
+        self.likes_entry = tk.Entry(self.new_prof_page,
+                                    width=31,
+                                    textvariable=self.likes)
+        self.dislikes_entry = tk.Entry(self.new_prof_page,
+                                       width=31,
+                                       textvariable=self.dislikes
+                                       )
+        self.books_entry = tk.Entry(self.new_prof_page,
+                                    width=31,
+                                    textvariable=self.book
+                                    )
+        self.add_country_btn = tk.Button(self.new_prof_page,
+                                         text="Add Acceptable Country",
+                                         command=self.addacceptablecountry
+                                         )
+        self.add_like_btn = tk.Button(self.new_prof_page,
+                                      text="Add A Like",
+                                      command=self.addlikes
+                                      )
+        self.add_dislike_btn = tk.Button(self.new_prof_page,
+                                         text="Add A Dislike",
+                                         command=self.adddislikes
+                                         )
+        self.add_book_btn = tk.Button(self.new_prof_page,
+                                      text="Add A Book",
+                                      command=self.addbook
+                                      )
+        self.verify_btn = tk.Button(self.new_prof_page,
+                                    text="Verify Profile",
+                                    command=self.confirm
+                                    )
         self.name_entry.grid(row=1, column=1, columnspan=2)
         self.r_male.grid(row=2, column=1)
         self.r_female.grid(row=2, column=2)
@@ -228,8 +260,14 @@ class Interface:
         self.displayed_likes_frame.grid(row=3, column=4)
         self.displayed_dislikes_frame.grid(row=5, column=4)
         self.displayed_books_frame.grid(row=7, column=4)
-        self.confirm_btn = tk.Button(self.new_prof_page, text="Confirm", command=self.write_new_profile)
-        self.cancel_btn = tk.Button(self.new_prof_page, text="Cancel", command=self.clear_new_profile_form)
+        self.confirm_btn = tk.Button(self.new_prof_page,
+                                     text="Confirm",
+                                     command=self.write_new_profile
+                                     )
+        self.cancel_btn = tk.Button(self.new_prof_page,
+                                    text="Cancel",
+                                    command=self.clear_new_profile_form
+                                    )
 
         self.notebook.grid(column=0, row=1)
         self.notebook.add(self.dir_page, text='folders')
@@ -296,7 +334,7 @@ class Interface:
         self.displayed_profile_text.set('')
         self.update_profiles()
         self.update_profile_page()
-        self.update_trees()
+        self.update_best_match_page()
         self.update_all_matches()
 
 
@@ -344,8 +382,11 @@ class Interface:
         usr = self.get_cur_selected_value()
         self.cur_user.set(usr)
         self.cur_usr_name.set(self.get_profile_name(usr))
-        self.update_profile_page()
-        self.update_matches()
+        if not self.cur_usr_name.get() == 'None':
+            self.update_profile_page()
+            self.update_matches()
+        else:
+            self.error_msg("please select a valid user")
 
 
     def update_file_list(self):
@@ -365,37 +406,42 @@ class Interface:
     def update_profile_page(self):
         if self.male_profiles and self.female_profiles:
             self.show_all_profile_btn.grid(column=0, row=2, stick='se')
+        else:
+            self.show_all_profile_btn.grid_forget()
+
+
+    def update_matches_page(self):
+        if self.cur_usr_name:
+            self.match.grid(column=0, row=1)
             self.filter_by_age_check.grid(column=0, row=3, stick='sw')
             self.filter_by_country_check.grid(column=0, row=2, stick='sw')
         else:
-            self.show_all_profile_btn.grid_forget()
+            self.match.grid_forget()
             self.filter_by_age_check.grid_forget()
             self.filter_by_country_check.grid_forget()
 
-
-    def update_trees(self):
+    def update_best_match_page(self):
         if self.male_profiles and self.female_profiles:
-            self.match.grid(column=0, row=1)
             self.all_matches.grid(column=0, row=1)
         else:
-            self.match.grid_forget()
             self.all_matches.grid_forget()
 
 
     def get_user_profile(self, key):
-        if key in self.female_profiles:
-            return self.female_profiles[key]
-        elif key in self.male_profiles:
-            return self.male_profiles[key]
-        else:
-            return None
+        if self.male_profiles and self.female_profiles:
+            if key in self.female_profiles:
+                return self.female_profiles[key]
+            elif key in self.male_profiles:
+                return self.male_profiles[key]
+        return None
 
     def get_profile_name(self, key):
         profiles = self.get_user_profile(key)
         if profiles:
-            return profiles['Name']
-        else:
-            return None
+            profile = profiles['Name']
+            if profile:
+                return profile
+        return None
 
     def get_potential_partners(self, key):
         if key in self.female_profiles:
@@ -494,9 +540,11 @@ class Interface:
         map(lambda d: self.criteria_best_match_to_csv(d, file_name=file_name),
             (Overall,Books,Likes)
             )
-
     def addacceptablecountry(self):
-        self.acceptable_country_str.set(self.acceptable_country_str.get() + self.acceptable_country.get() + ",")
+        self.acceptable_country_str.set(
+            self.acceptable_country_str.get()
+            + self.acceptable_country.get() + ","
+        )
         self.acceptable_country_entry.delete(0, 'end')
 
     def addlikes(self):
@@ -504,7 +552,9 @@ class Interface:
         self.likes_entry.delete(0, 'end')
 
     def adddislikes(self):
-        self.dislikes_str.set(self.dislikes_str.get() + self.dislikes.get() + ",")
+        self.dislikes_str.set(self.dislikes_str.get()
+                              + self.dislikes.get() + ","
+                              )
         self.dislikes_entry.delete(0, 'end')
 
     def addbook(self):
@@ -563,6 +613,14 @@ class Interface:
         self.confirm_btn.grid_forget()
         self.display_new_profile.grid_forget()
         self.verify_btn.grid(row=10, column=3)
+
+
+    def error_msg(self, msg):
+        error_frame = tk.Toplevel()
+        error_frame.resizable(False, False)
+        tk.Label(error_frame,fg="red",text=msg).pack()
+
+
 rt = tk.Tk()
 gui = Interface(rt)
 rt.mainloop()
