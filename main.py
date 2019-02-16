@@ -19,6 +19,7 @@ class Interface:
         self.cur_usr_name = tk.StringVar()
         self.cur_usr_name.set(None)
         self.displayed_profile_text = tk.StringVar()
+        self.show_top_n_default=tk.IntVar(value=3)
         self.filter_by_country = tk.BooleanVar(value=True)
         self.filter_by_age = tk.BooleanVar(value=True)
         self.criteria = tk.StringVar(None, 'Overall')
@@ -90,6 +91,16 @@ class Interface:
             text='show all profiles',
             command = self.show_all_profiles
            )
+        self.show_top_n_label = tk.Label(
+            self.match_page,
+            text='show top            results'
+            )
+        self.show_top_n = tk.Spinbox(self.match_page,
+                                  from_=1, to=99,
+                                  textvariable=self.show_top_n_default,
+                                  width=2,
+                                  command=self.update_matches
+                                  )
         self.filter_by_country_check = tk.Checkbutton(
             self.match_page,
             text="filter by country",
@@ -107,7 +118,7 @@ class Interface:
         self.all_matches = ttk.Treeview(
             self.all_matches_page,
             columns=('Name', 'Country','Gender' , 'Age', 'Score'),
-            show = 'headings'
+            show = 'headings',
         )
         self.best_match_label = tk.Label(self.all_matches_page,
                                          text = 'show best match based on:')
@@ -140,9 +151,9 @@ class Interface:
         self.likes_str = tk.StringVar()
         self.dislikes_str = tk.StringVar()
         self.books_str = tk.StringVar()
-        self.defaultage = tk.StringVar()
-        self.defaultminage = tk.StringVar()
-        self.defaultmaxage = tk.StringVar()
+        self.defaultage = tk.IntVar()
+        self.defaultminage = tk.IntVar()
+        self.defaultmaxage = tk.IntVar()
         self.defaultage.set("16")
         self.defaultminage.set("16")
         self.defaultmaxage.set("16")
@@ -208,9 +219,21 @@ class Interface:
                                                  width=31,
                                         textvariable=self.acceptable_country
                                                  )
-        self.age = tk.Spinbox(self.new_prof_page, from_=16, to=100, width=2, textvariable=self.defaultage)
-        self.min_age = tk.Spinbox(self.new_prof_page, from_=16, to=100, width=2, textvariable=self.defaultminage)
-        self.max_age = tk.Spinbox(self.new_prof_page, from_=16, to=100, width=2, textvariable=self.defaultmaxage)
+        self.age = tk.Spinbox(self.new_prof_page,
+                              from_=16, to=100,
+                              width=2,
+                              textvariable=self.defaultage
+                              )
+        self.min_age = tk.Spinbox(self.new_prof_page,
+                                  from_=16, to=100,
+                                  width=2,
+                                  textvariable=self.defaultminage
+                                  )
+        self.max_age = tk.Spinbox(self.new_prof_page,
+                                  from_=16, to=100,
+                                  width=2,
+                                  textvariable=self.defaultmaxage
+                                  )
         self.likes_entry = tk.Entry(self.new_prof_page,
                                     width=31,
                                     textvariable=self.likes)
@@ -417,10 +440,15 @@ class Interface:
             self.match.grid_forget()
             self.filter_by_age_check.grid_forget()
             self.filter_by_country_check.grid_forget()
+            self.show_top_n_label.grid_forget()
+            self.show_top_n.grid_forget()
         else:
             self.match.grid(column=0, row=1)
-            self.filter_by_age_check.grid(column=0, row=3, stick='sw')
-            self.filter_by_country_check.grid(column=0, row=2, stick='sw')
+            self.filter_by_age_check.grid(column=0, row=4, stick='sw')
+            self.filter_by_country_check.grid(column=0, row=3, stick='sw')
+            self.show_top_n_label.grid(column=0, row=2, stick='sw')
+            self.show_top_n.grid(column=0, row=2, padx=56, stick='sw')
+
 
 
     def get_user_profile(self, key):
@@ -464,7 +492,9 @@ class Interface:
         self.match.insert('', 'end',criteria_name,
                           text=criteria_name, open=True
                           )
-        matches = criteria.matches(cur_user, potential_partners).most_common()
+        matches = criteria.matches(cur_user,potential_partners)
+        self.no_of_matches=len(matches)
+        matches=matches.most_common(int(self.show_top_n.get()))
         map(lambda m: self.match.insert(criteria_name,
                                         'end',
                                         ''.join((criteria_name,m[0])),
