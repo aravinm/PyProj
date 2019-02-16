@@ -596,6 +596,7 @@ class Interface:
 
     def confirm(self):
         def cancel():
+            self.clear_new_profile_form()
             verify_frame.destroy()
         def write():
             self.write_new_profile()
