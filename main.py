@@ -7,6 +7,7 @@ import os,csv
 import reader
 import Age,Books,Countries,Likes,Overall
 from utils import ignored
+from textwrap import dedent
 
 
 class Interface:
@@ -57,7 +58,7 @@ class Interface:
             text="choose folder path",
             command = self.set_cur_dir,
            )
-        self.cur_dir_label.grid(column=0, row=0, )
+        self.cur_dir_label.grid(column=0, row=0)
         self.cur_dir_value.grid(column=0, row=0)
         self.choose_path_btn.grid(column=1, row=0)
 
@@ -94,12 +95,14 @@ class Interface:
             self.match_page,
             text="filter by country",
             variable=self.filter_by_country,
-            command=self.update_matches)
+            command=self.update_matches
+        )
         self.filter_by_age_check = tk.Checkbutton(
             self.match_page,
             text="filter by age",
             variable=self.filter_by_age,
-            command=self.update_matches)
+            command=self.update_matches
+        )
 
         self.all_matches_page = ttk.Frame(self.notebook)
         self.all_matches = ttk.Treeview(
@@ -126,81 +129,65 @@ class Interface:
                                         ,command=self.all_best_match_to_csv
                                         )
 
-        self.newprof_page = ttk.Frame(self.notebook)
-        self.string_list = []
+        self.new_prof_page = ttk.Frame(self.notebook)
         self.name = tk.StringVar()
         self.gender = tk.StringVar()
         self.country = tk.StringVar()
-        self.acceptablecountry = tk.StringVar()
+        self.acceptable_country = tk.StringVar()
         self.likes = tk.StringVar()
         self.dislikes = tk.StringVar()
         self.book = tk.StringVar()
-        self.namestr = tk.StringVar()
-        self.genderstr = tk.StringVar()
-        self.countrystr = tk.StringVar()
-        self.acceptablecountrystr = tk.StringVar()
-        self.agestr = tk.StringVar()
-        self.agerangestr = tk.StringVar()
-        self.likestr = tk.StringVar()
-        self.dislikestr = tk.StringVar()
-        self.bookstr = tk.StringVar()
-        self.namestr.set("Name: ")
-        self.genderstr.set("Gender: ")
-        self.countrystr.set("Country: ")
-        self.acceptablecountrystr.set("Acceptable_country: ")
-        self.agestr.set("Age: ")
-        self.agerangestr.set("Acceptable_age_range: ")
-        self.likestr.set("Likes: ")
-        self.dislikestr.set("Dislikes: ")
-        self.bookstr.set("Books:" + "\n")
+        self.acceptable_countrystr = tk.StringVar()
+        self.likes_str = tk.StringVar()
+        self.dislikes_str = tk.StringVar()
+        self.books_str = tk.StringVar()
+
         self.displayed_acceptablecountry = tk.Label(
-            self.newprof_page,
-            textvariable=self.acceptablecountrystr
+            self.new_prof_page,
+            textvariable=self.acceptable_countrystr
         )
         self.displayed_likes = tk.Label(
-            self.newprof_page,
-            textvariable=self.likestr
+            self.new_prof_page,
+            textvariable=self.likes_str
         )
         self.displayed_dislikes = tk.Label(
-            self.newprof_page,
-            textvariable=self.dislikestr
+            self.new_prof_page,
+            textvariable=self.dislikes_str
         )
         self.displayed_books = tk.Label(
-            self.newprof_page,
-            textvariable=self.bookstr
+            self.new_prof_page,
+            textvariable=self.books_str
         )
         self.profilestr = tk.StringVar()
-        for x in self.string_list:
-            self.profilestr.set(self.profilestr.get() + str(x) + "\n")
         self.display_new_profile = tk.Label(
-            self.newprof_page,
+            self.new_prof_page,
             textvariable=self.profilestr
         )
-        tk.Label(self.newprof_page, text="Name").grid(row=1)
-        tk.Label(self.newprof_page, text="Gender").grid(row=2)
-        tk.Label(self.newprof_page, text="Country").grid(row=3)
-        tk.Label(self.newprof_page, text="Acceptable Country").grid(row=4)
-        tk.Label(self.newprof_page, text="Age").grid(row=5)
-        tk.Label(self.newprof_page, text="Acceptable Age Range").grid(row=6)
-        tk.Label(self.newprof_page, text="Likes").grid(row=7)
-        tk.Label(self.newprof_page, text="Dislikes").grid(row=8)
-        tk.Label(self.newprof_page, text="Books").grid(row=9)
-        self.name_entry = tk.Entry(self.newprof_page, width=31, textvariable=self.name)
-        self.rmale = tk.Radiobutton(self.newprof_page, text="Male", variable=self.gender, value="Male")
-        self.rfemale = tk.Radiobutton(self.newprof_page, text="Female", variable=self.gender, value="Female")
-        self.country_entry = tk.Entry(self.newprof_page, width=31, textvariable=self.country)
-        self.acceptable_country_entry = tk.Entry(self.newprof_page, width=31, textvariable=self.acceptablecountry)
-        self.age = tk.Spinbox(self.newprof_page, from_=16, to=100, width=2)
-        self.min_age = tk.Spinbox(self.newprof_page, from_=16, to=100, width=2)
-        self.max_age = tk.Spinbox(self.newprof_page, from_=16, to=100, width=2)
-        self.likes_entry = tk.Entry(self.newprof_page, width=31, textvariable=self.likes)
-        self.dislikes_entry = tk.Entry(self.newprof_page, width=31, textvariable=self.dislikes)
-        self.books_entry = tk.Entry(self.newprof_page, width=31, textvariable=self.book)
-        self.add_country_btn = tk.Button(self.newprof_page, text="Add Acceptable Country", command=self.addacceptablecountry)
-        self.add_like_btn = tk.Button(self.newprof_page, text="Add A Like", command=self.addlikes)
-        self.add_dislike_btn = tk.Button(self.newprof_page, text="Add A Dislike", command=self.adddislikes)
-        self.add_book_btn = tk.Button(self.newprof_page, text="Add A Book", command=self.addbook)
-        self.verify_btn = tk.Button(self.newprof_page, text="Verify Profile", command=self.confirm)
+        tk.Label(self.new_prof_page, text="Name").grid(row=1)
+        tk.Label(self.new_prof_page, text="Gender").grid(row=2)
+        tk.Label(self.new_prof_page, text="Country").grid(row=3)
+        tk.Label(self.new_prof_page, text="Acceptable Country").grid(row=4)
+        tk.Label(self.new_prof_page, text="Age").grid(row=5)
+        tk.Label(self.new_prof_page, text="Acceptable Age Range").grid(row=6)
+        tk.Label(self.new_prof_page, text="Likes").grid(row=7)
+        tk.Label(self.new_prof_page, text="Dislikes").grid(row=8)
+        tk.Label(self.new_prof_page, text="Books").grid(row=9)
+        self.name_entry = tk.Entry(self.new_prof_page, width=31, textvariable=self.name)
+        self.rmale = tk.Radiobutton(self.new_prof_page, text="Male", variable=self.gender, value="Male")
+        self.rfemale = tk.Radiobutton(self.new_prof_page, text="Female", variable=self.gender, value="Female")
+        self.country_entry = tk.Entry(self.new_prof_page, width=31, textvariable=self.country)
+        self.acceptable_country_entry = tk.Entry(self.new_prof_page, width=31, textvariable=self.acceptable_country)
+        self.age = tk.Spinbox(self.new_prof_page, from_=16, to=100, width=2)
+        self.min_age = tk.Spinbox(self.new_prof_page, from_=16, to=100, width=2)
+        self.max_age = tk.Spinbox(self.new_prof_page, from_=16, to=100, width=2)
+        self.likes_entry = tk.Entry(self.new_prof_page, width=31, textvariable=self.likes)
+        self.dislikes_entry = tk.Entry(self.new_prof_page, width=31, textvariable=self.dislikes)
+        self.books_entry = tk.Entry(self.new_prof_page, width=31, textvariable=self.book)
+        self.add_country_btn = tk.Button(self.new_prof_page, text="Add Acceptable Country", command=self.addacceptablecountry)
+        self.add_like_btn = tk.Button(self.new_prof_page, text="Add A Like", command=self.addlikes)
+        self.add_dislike_btn = tk.Button(self.new_prof_page, text="Add A Dislike", command=self.adddislikes)
+        self.add_book_btn = tk.Button(self.new_prof_page, text="Add A Book", command=self.addbook)
+        self.verify_btn = tk.Button(self.new_prof_page, text="Verify Profile", command=self.confirm)
         self.name_entry.grid(row=1, column=1, columnspan=2)
         self.rmale.grid(row=2, column=1)
         self.rfemale.grid(row=2, column=2)
@@ -217,8 +204,8 @@ class Interface:
         self.add_dislike_btn.grid(row=8, column=3)
         self.add_book_btn.grid(row=9, column=3)
         self.verify_btn.grid(row=10, column=3)
-        self.confirm_btn = tk.Button(self.newprof_page, text="Confirm", command=self.write_new_profile)
-        self.cancel_btn = tk.Button(self.newprof_page, text="Cancel", command=self.clear_new_profile_form)
+        self.confirm_btn = tk.Button(self.new_prof_page, text="Confirm", command=self.write_new_profile)
+        self.cancel_btn = tk.Button(self.new_prof_page, text="Cancel", command=self.clear_new_profile_form)
         self.displayed_acceptablecountry.grid(row=1, column=4)
         self.displayed_likes.grid(row=3, column=4)
         self.displayed_dislikes.grid(row=5, column=4)
@@ -230,7 +217,7 @@ class Interface:
         self.notebook.add(self.profile_page, text='profiles')
         self.notebook.add(self.match_page, text='matches')
         self.notebook.add(self.all_matches_page, text='best match')
-        self.notebook.add(self.newprof_page, text='Create Profile')
+        self.notebook.add(self.new_prof_page, text='Create Profile')
 
     def get_cur_selected_value(self):
         with ignored(tk.TclError):
@@ -490,41 +477,49 @@ class Interface:
             )
 
     def addacceptablecountry(self):
-        self.acceptablecountrystr.set(self.acceptablecountrystr.get() + self.acceptablecountry.get()+",")
+        self.acceptable_countrystr.set(self.acceptable_countrystr.get() + self.acceptable_country.get() + ",")
         self.acceptable_country_entry.delete(0, 'end')
 
     def addlikes(self):
-        self.likestr.set(self.likestr.get()+self.likes.get()+",")
+        self.likes_str.set(self.likes_str.get() + self.likes.get() + ",")
         self.likes_entry.delete(0, 'end')
 
     def adddislikes(self):
-        self.dislikestr.set(self.dislikestr.get() + self.dislikes.get() + ",")
+        self.dislikes_str.set(self.dislikes_str.get() + self.dislikes.get() + ",")
         self.dislikes_entry.delete(0, 'end')
 
     def addbook(self):
-        self.bookstr.set(self.bookstr.get()+self.book.get()+"\n")
+        self.books_str.set(self.books_str.get() + self.book.get() + "\n")
         self.books_entry.delete(0, 'end')
 
     def confirm(self):
         self.verify_btn.grid_forget()
-        self.namestr.set(self.namestr.get() + self.name.get())
-        self.genderstr.set(self.genderstr.get()+self.gender.get())
-        self.countrystr.set(self.countrystr.get()+self.country.get())
-        self.agestr.set(self.agestr.get()+str(self.age.get()))
-        self.agerangestr.set(self.agerangestr.get() + str(self.min_age.get()) + "-" + str(self.max_age.get()))
-        bookstrr = tk.StringVar()
-        bookstrr.set("\n"+str(self.bookstr.get()))
-        self.string_list.append(self.namestr.get())
-        self.string_list.append(self.genderstr.get())
-        self.string_list.append(self.countrystr.get())
-        self.string_list.append(self.acceptablecountrystr.get())
-        self.string_list.append(self.agestr.get())
-        self.string_list.append(self.agerangestr.get())
-        self.string_list.append(self.likestr.get())
-        self.string_list.append(self.dislikestr.get())
-        self.string_list.append(bookstrr.get())
-        for x in self.string_list:
-            self.profilestr.set(self.profilestr.get() + str(x) + "\n")
+        new_profile_text=dedent(
+            """\
+            Name: {}
+            Gender: {}
+            Country: {}
+            Acceptable_country: {}
+            Age: {}
+            Acceptable_age_range: {}-{}
+            Likes: {}
+            Dislikes: {}
+            
+            Books:
+            {}
+            """
+        ).format(
+            self.name.get(),
+            self.gender.get(),
+            self.country.get(),
+            self.acceptable_countrystr.get(),
+            self.age.get(),
+            self.min_age.get(),self.max_age.get(),
+            self.likes_str.get(),
+            self.dislikes_str.get(),
+            self.books_str.get())
+
+        self.profilestr.set(new_profile_text)
         self.confirm_btn.grid(row=11, column=0)
         self.cancel_btn.grid(row=11, column=1)
 
@@ -544,13 +539,6 @@ class Interface:
         self.likes_entry.delete(0, 'end')
         self.dislikes_entry.delete(0, 'end')
         self.books_entry.delete(0, 'end')
-        self.acceptablecountrystr.set("Acceptable_country: ")
-        self.likestr.set("Likes: ")
-        self.dislikestr.set("Dislikes: ")
-        self.bookstr.set("Books:"+"\n")
-        self.string_list=[]
-        self.agestr.set('Age: ')
-        self.agerangestr.set('Acceptable_age_range ')
         self.profilestr.set("")
         self.cancel_btn.grid_forget()
         self.confirm_btn.grid_forget()
